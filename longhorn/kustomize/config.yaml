@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: longhorn-default-setting
+data:
+  default-setting.yaml: |-
+    default-data-path: /app/longhorn
+    storage-over-provisioning-percentage: 100
+    default-replica-count: 2
+
+
