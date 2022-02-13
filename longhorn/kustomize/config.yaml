@@ -38,7 +38,7 @@ data:
     backing-image-recovery-wait-interval:
     guaranteed-engine-manager-cpu:
     guaranteed-replica-manager-cpu:
-    default-data-path: /app/longhorn
+    default-data-path: /app/longhorn/
     storage-over-provisioning-percentage: 100
     default-replica-count: 2
 
