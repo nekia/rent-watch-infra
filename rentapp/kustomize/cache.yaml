@@ -1,4 +1,9 @@
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: rentapp
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: rentapp-pvc
