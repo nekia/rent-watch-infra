@@ -3,7 +3,8 @@ kind: Kustomization
 namespace: longhorn-system
 resources:
 - https://raw.githubusercontent.com/longhorn/longhorn/v1.2.2/deploy/longhorn.yaml
-- https://raw.githubusercontent.com/longhorn/longhorn/v1.2.2/examples/storageclass.yaml
+# - https://raw.githubusercontent.com/longhorn/longhorn/v1.2.2/examples/storageclass.yaml
 - ingress.yaml
 patchesStrategicMerge:
 - config.yaml
+- config-sc.yaml
