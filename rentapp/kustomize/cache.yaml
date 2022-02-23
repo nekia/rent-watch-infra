@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rentapp-pvc
+  namespace: rentapp
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: rentapp
+  name: rentapp
+  namespace: rentapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rentapp
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: rentapp
+    spec:
+      volumes:
+      - name: cachevol
+        persistentVolumeClaim:
+          claimName: rentapp-pvc
+      - name: cacheconfig
+        configMap:
+          name: redis-config
+          items:
+          - key: redis-config
+            path: redis.conf
+      containers:
+      - image: redis:6.2.6
+        name: redis
+        resources: {}
+        volumeMounts:
+        - mountPath: /usr/local/etc/redis/
+          name: cacheconfig
+        - mountPath: /data
+          name: cachevol
+        args:
+        - "redis-server"
+        - "/usr/local/etc/redis/redis.conf"
+status: {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rentapp-cache-config
+  namespace: rentapp
+data:
+  redis.conf: |-
+    backup-target:
+    backup-target-credential-secret:
+    allow-recurring-job-while-volume-detached:
+    create-default-disk-labeled-nodes:
+    replica-soft-anti-affinity:
+    replica-auto-balance:
+    storage-minimal-available-percentage:
+    upgrade-checker:
+    default-data-locality:
+    default-longhorn-static-storage-class:
+    backupstore-poll-interval:
+    taint-toleration:
+    system-managed-components-node-selector:
+    priority-class:
+    auto-salvage:
+    auto-delete-pod-when-volume-detached-unexpectedly:
+    disable-scheduling-on-cordoned-node:
+    replica-zone-soft-anti-affinity:
+    node-down-pod-deletion-policy:
+    allow-node-drain-with-last-healthy-replica:
+    mkfs-ext4-parameters:
+    disable-replica-rebuild:
+    replica-replenishment-wait-interval:
+    concurrent-replica-rebuild-per-node-limit:
+    disable-revision-counter:
+    system-managed-pods-image-pull-policy:
+    allow-volume-creation-with-degraded-availability:
+    auto-cleanup-system-generated-snapshot:
+    concurrent-automatic-engine-upgrade-per-node-limit:
+    backing-image-cleanup-wait-interval:
+    backing-image-recovery-wait-interval:
+    guaranteed-engine-manager-cpu:
+    guaranteed-replica-manager-cpu:
+    default-data-path: /app/longhorn
+    storage-over-provisioning-percentage: 100
+    default-replica-count: 2
+
+
