@@ -76,6 +76,6 @@ spec:
     targetPort: 6379
   selector:
     app: rentapp
-  type: ClusterIP
+  type: NodePort
 status:
   loadBalancer: {}
