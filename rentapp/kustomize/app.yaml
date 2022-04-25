@@ -1,0 +1,229 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediator
+  labels:
+    app: mediator
+  namespace: rentapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mediator
+  template:
+    metadata:
+      labels:
+        app: mediator
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      containers:
+      - name: mediator
+        image: local.insecure-registry.io/nekia/mediator:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+      imagePullSecrets:
+      - name: regcred
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: mediator
+#   namespace: rentapp
+# spec:
+#   ports:
+#   - name: "http-port"
+#     protocol: TCP
+#     port: 50051
+#     targetPort: 50051
+#   selector:
+#     app: mediator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scanner-linea
+  labels:
+    app: scanner-linea
+  namespace: rentapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: scanner-linea
+  template:
+    metadata:
+      labels:
+        app: scanner-linea
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      containers:
+      - name: scanner-linea
+        image: local.insecure-registry.io/nekia/scanner-linea:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+        ports:
+        - containerPort: 3000
+      imagePullSecrets:
+      - name: regcred
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: scanner-linea
+  namespace: rentapp
+spec:
+  ports:
+  - name: "http-port"
+    protocol: TCP
+    port: 3000
+  selector:
+    app: scanner-linea
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-server
+  labels:
+    app: nats-server
+  namespace: rentapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats-server
+  template:
+    metadata:
+      labels:
+        app: nats-server
+    spec:
+      containers:
+      - name: nats-server
+        image: nats:2.7.4
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 4222
+        args:
+        - "-js"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nats-server
+  namespace: rentapp
+spec:
+  ports:
+  - name: "http-port"
+    protocol: TCP
+    port: 4222
+  selector:
+    app: nats-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifier
+  labels:
+    app: notifier
+  namespace: rentapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notifier
+  template:
+    metadata:
+      labels:
+        app: notifier
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z scanner-linea 3000; do echo waiting for scanner; sleep 2; done;']
+      - name: init-myservice2
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
+      containers:
+      - name: notifier
+        image: local.insecure-registry.io/nekia/notifier:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: CACHE_MGR_URL
+            value: cache-mgr:50051
+          - name: LINE_NOTIFY_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: line-notify-token
+                key: line-notify-token
+      imagePullSecrets:
+      - name: regcred
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: notifier
+#   namespace: rentapp
+# spec:
+#   ports:
+#   - name: "http-port"
+#     protocol: TCP
+#     port: 50051
+#     targetPort: 50051
+#   selector:
+#     app: notifier
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cache-mgr
+  labels:
+    app: cache-mgr
+  namespace: rentapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cache-mgr
+  template:
+    metadata:
+      labels:
+        app: cache-mgr
+    spec:
+      containers:
+      - name: cache-mgr
+        image: local.insecure-registry.io/nekia/cache-mgr:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: REDIS_SERVER_URL
+            value: "redis://rentapp:6379"
+          # - name: IGNORE_INSPECTED_CACHE
+          #   value: "1"
+        ports:
+        - containerPort: 50051
+      imagePullSecrets:
+      - name: regcred
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: cache-mgr
+  namespace: rentapp
+spec:
+  ports:
+  - name: "http-port"
+    protocol: TCP
+    port: 50051
+    targetPort: 50051
+  selector:
+    app: cache-mgr
