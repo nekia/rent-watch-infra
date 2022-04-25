@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: crawler-suumo
+  namespace: rentapp
+  # labels:
+  #   app: crawler-suumo
+spec:
+  schedule: "1 7-23 * * *"
+  jobTemplate:
+    spec:
+      # selector:
+      #   matchLabels:
+      #     app: crawler-suumo
+      template:
+        # metadata:
+        #   labels:
+        #     app: crawler-suumo
+        spec:
+          restartPolicy: OnFailure
+          initContainers:
+          - name: init-myservice
+            image: busybox:1.28
+            command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+          - name: init-myservice2
+            image: busybox:1.28
+            command: ['sh', '-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
+          containers:
+          - name: crawler-suumo
+            image: local.insecure-registry.io/nekia/crawler-suumo:1.0.0
+            imagePullPolicy: Always
+            env:
+              - name: NATS_SERVER_URL
+                value: nats-server:4222
+              - name: CACHE_MGR_URL
+                value: cache-mgr:50051
+          imagePullSecrets:
+          - name: regcred

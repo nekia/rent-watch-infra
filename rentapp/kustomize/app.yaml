@@ -51,7 +51,7 @@ metadata:
     app: scanner-linea
   namespace: rentapp
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: scanner-linea
@@ -88,6 +88,52 @@ spec:
     port: 3000
   selector:
     app: scanner-linea
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scanner-suumo
+  labels:
+    app: scanner-suumo
+  namespace: rentapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: scanner-suumo
+  template:
+    metadata:
+      labels:
+        app: scanner-suumo
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      containers:
+      - name: scanner-suumo
+        image: local.insecure-registry.io/nekia/scanner-suumo:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+        ports:
+        - containerPort: 3000
+      imagePullSecrets:
+      - name: regcred
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: scanner-suumo
+  namespace: rentapp
+spec:
+  ports:
+  - name: "http-port"
+    protocol: TCP
+    port: 3000
+  selector:
+    app: scanner-suumo
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -150,6 +196,9 @@ spec:
         image: busybox:1.28
         command: ['sh', '-c', 'until nc -z scanner-linea 3000; do echo waiting for scanner; sleep 2; done;']
       - name: init-myservice2
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z scanner-suumo 3000; do echo waiting for scanner; sleep 2; done;']
+      - name: init-myservice3
         image: busybox:1.28
         command: ['sh', '-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
       containers:
