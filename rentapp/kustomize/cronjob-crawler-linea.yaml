@@ -34,5 +34,16 @@ spec:
                 value: nats-server:4222
               - name: CACHE_MGR_URL
                 value: cache-mgr:50051
+            volumeMounts:
+            - name: crawler-linea-config-tky-rent
+              mountPath: /usr/src/app/setting
+              readOnly: true
+          volumes:
+          - name: crawler-linea-config-tky-rent
+            configMap:
+              name: crawler-linea-config-tky-rent
+              items:
+              - key: "setting.json"
+                path: "setting.json"
           imagePullSecrets:
           - name: regcred

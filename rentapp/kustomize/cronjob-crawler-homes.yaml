@@ -34,5 +34,16 @@ spec:
                 value: nats-server:4222
               - name: CACHE_MGR_URL
                 value: cache-mgr:50051
+            volumeMounts:
+            - name: crawler-homes-config-tky-rent
+              mountPath: /usr/src/app/setting
+              readOnly: true
+          volumes:
+          - name: crawler-homes-config-tky-rent
+            configMap:
+              name: crawler-homes-config-tky-rent
+              items:
+              - key: "setting.json"
+                path: "setting.json"
           imagePullSecrets:
           - name: regcred

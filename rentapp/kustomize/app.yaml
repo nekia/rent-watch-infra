@@ -28,20 +28,6 @@ spec:
             value: nats-server:4222
       imagePullSecrets:
       - name: regcred
-# ---
-# kind: Service
-# apiVersion: v1
-# metadata:
-#   name: mediator
-#   namespace: rentapp
-# spec:
-#   ports:
-#   - name: "http-port"
-#     protocol: TCP
-#     port: 50051
-#     targetPort: 50051
-#   selector:
-#     app: mediator
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -71,6 +57,10 @@ spec:
         env:
           - name: NATS_SERVER_URL
             value: nats-server:4222
+          - name: NATS_SUBJECT_ROOMURL
+            value: room-homes-tky-rent
+          - name: NATS_SUBJECT_ROOMDETAIL
+            value: roomdetails-tky-rent
         ports:
         - containerPort: 3000
       imagePullSecrets:
@@ -117,6 +107,10 @@ spec:
         env:
           - name: NATS_SERVER_URL
             value: nats-server:4222
+          - name: NATS_SUBJECT_ROOMURL
+            value: room-homes-tky-rent
+          - name: NATS_SUBJECT_ROOMDETAIL
+            value: roomdetails-tky-rent
         ports:
         - containerPort: 3000
       imagePullSecrets:
@@ -163,6 +157,10 @@ spec:
         env:
           - name: NATS_SERVER_URL
             value: nats-server:4222
+          - name: NATS_SUBJECT_ROOMURL
+            value: room-homes-tky-rent
+          - name: NATS_SUBJECT_ROOMDETAIL
+            value: roomdetails-tky-rent
         ports:
         - containerPort: 3000
       imagePullSecrets:
@@ -264,22 +262,20 @@ spec:
               secretKeyRef:
                 name: line-notify-token
                 key: line-notify-token
+        volumeMounts:
+          - name: notifier-config-tky-rent
+            mountPath: /usr/src/app/setting
+      volumes:
+      - name: notifier-config-tky-rent
+        configMap:
+          name: notifier-config-tky-rent
+          items:
+          - key: "consumer-config.json"
+            path: "consumer-config.json"
+          - key: "setting.json"
+            path: "setting.json"
       imagePullSecrets:
       - name: regcred
-# ---
-# kind: Service
-# apiVersion: v1
-# metadata:
-#   name: notifier
-#   namespace: rentapp
-# spec:
-#   ports:
-#   - name: "http-port"
-#     protocol: TCP
-#     port: 50051
-#     targetPort: 50051
-#   selector:
-#     app: notifier
 ---
 apiVersion: apps/v1
 kind: Deployment
