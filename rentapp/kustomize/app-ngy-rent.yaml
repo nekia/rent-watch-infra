@@ -6,7 +6,7 @@ metadata:
     app: scanner-homes-ngy-rent
   namespace: rentapp
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: scanner-homes-ngy-rent
@@ -82,6 +82,12 @@ spec:
         env:
           - name: NATS_SERVER_URL
             value: nats-server:4222
+          - name: NATS_CONSUMER_NAME
+            value: myconsumer2
+          - name: NATS_CONSUMER_BATCH_SIZE
+            value: "10"
+          - name: NATS_CONSUMER_BATCH_DURATION
+            value: "60000"
           - name: CACHE_MGR_URL
             value: cache-mgr:50051
           - name: LINE_NOTIFY_TOKEN

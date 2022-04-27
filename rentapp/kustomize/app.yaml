@@ -58,7 +58,7 @@ spec:
           - name: NATS_SERVER_URL
             value: nats-server:4222
           - name: NATS_SUBJECT_ROOMURL
-            value: room-homes-tky-rent
+            value: room-linea-tky-rent
           - name: NATS_SUBJECT_ROOMDETAIL
             value: roomdetails-tky-rent
         ports:
@@ -108,7 +108,7 @@ spec:
           - name: NATS_SERVER_URL
             value: nats-server:4222
           - name: NATS_SUBJECT_ROOMURL
-            value: room-homes-tky-rent
+            value: room-suumo-tky-rent
           - name: NATS_SUBJECT_ROOMDETAIL
             value: roomdetails-tky-rent
         ports:
@@ -178,6 +178,56 @@ spec:
     port: 3000
   selector:
     app: scanner-homes
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scanner-rstore
+  labels:
+    app: scanner-rstore
+  namespace: rentapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scanner-rstore
+  template:
+    metadata:
+      labels:
+        app: scanner-rstore
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      containers:
+      - name: scanner-rstore
+        image: local.insecure-registry.io/nekia/scanner-rstore:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: NATS_SUBJECT_ROOMURL
+            value: room-rstore-tky-rent
+          - name: NATS_SUBJECT_ROOMDETAIL
+            value: roomdetails-tky-rent
+        ports:
+        - containerPort: 3000
+      imagePullSecrets:
+      - name: regcred
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: scanner-rstore
+  namespace: rentapp
+spec:
+  ports:
+  - name: "http-port"
+    protocol: TCP
+    port: 3000
+  selector:
+    app: scanner-rstore
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -255,6 +305,12 @@ spec:
         env:
           - name: NATS_SERVER_URL
             value: nats-server:4222
+          - name: NATS_CONSUMER_NAME
+            value: myconsumer
+          - name: NATS_CONSUMER_BATCH_SIZE
+            value: "10"
+          - name: NATS_CONSUMER_BATCH_DURATION
+            value: "60000"
           - name: CACHE_MGR_URL
             value: cache-mgr:50051
           - name: LINE_NOTIFY_TOKEN
@@ -301,8 +357,8 @@ spec:
         env:
           - name: REDIS_SERVER_URL
             value: "redis://rentapp:6379"
-          # - name: IGNORE_INSPECTED_CACHE
-          #   value: "1"
+          - name: IGNORE_INSPECTED_CACHE
+            value: "0"
         ports:
         - containerPort: 50051
       imagePullSecrets:
