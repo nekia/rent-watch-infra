@@ -87,7 +87,7 @@ metadata:
     app: scanner-suumo
   namespace: rentapp
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: scanner-suumo
@@ -137,7 +137,7 @@ metadata:
     app: scanner-homes
   namespace: rentapp
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: scanner-homes
