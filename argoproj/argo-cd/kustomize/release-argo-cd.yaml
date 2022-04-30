@@ -12,4 +12,9 @@ spec:
         kind: HelmRepository
         name: argo-cd
       version: 4.5.7
+  values:
+    applicationSet:
+      image:
+        repository: ghcr.io/jr64/argocd-applicationset
+        tag: v0.4.0
   interval: 1m0s
