@@ -10,7 +10,7 @@ spec:
       chart: argo-events
       sourceRef:
         kind: HelmRepository
-        name: argoproj
+        name: argo-events
       version: 1.13.0
   interval: 1m0s
 
