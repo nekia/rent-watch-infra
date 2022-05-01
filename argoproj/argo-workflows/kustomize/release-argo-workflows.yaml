@@ -12,6 +12,10 @@ spec:
         kind: HelmRepository
         name: argo-workflows
       version: 0.14.0
+  values:
+    server:
+      extraArgs:
+        - --auth-mode=server
   interval: 1m0s
   targetNamespace: argo-workflows
 
