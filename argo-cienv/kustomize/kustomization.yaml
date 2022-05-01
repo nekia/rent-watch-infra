@@ -9,3 +9,9 @@ resources:
   - event-sources-github.yaml
   - event-sensors-github.yaml
   - ngrok-deploy.yaml
+
+configMapGenerator:
+- name: ngrok-config
+  files:
+    # configfile is used as key
+    - ngrok.yml

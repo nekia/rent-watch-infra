@@ -1,0 +1,9 @@
+version: "2"
+console_ui: false
+log: stdout
+log_level: info
+tunnels:
+  demo:
+    proto: http
+    addr: webhook-eventsource-svc.argo-events:12000
+    inspect: false

@@ -19,6 +19,12 @@ spec:
       - name: ngrok
         image: local.insecure-registry.io/ngrok:1.0.0
         imagePullPolicy: Always
+        env:
+          - name: NGROK_AUTHTOKEN
+            valueFrom:
+              secretKeyRef:
+                name: ngrok-authtoken
+                key: ngrok-authtoken
         volumeMounts:
           - name: ngrok-config
             mountPath: /root/.config/ngrok
