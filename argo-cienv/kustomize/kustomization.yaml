@@ -8,3 +8,4 @@ resources:
   - argo-workflows-templates-build-kaniko-git.yaml
   - event-sources-github.yaml
   - event-sensors-github.yaml
+  - ngrok-deploy.yaml

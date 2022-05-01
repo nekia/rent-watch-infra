@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ngrok
+  labels:
+    app: ngrok
+  namespace: argo-events
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ngrok
+  template:
+    metadata:
+      labels:
+        app: ngrok
+    spec:
+      containers:
+      - name: ngrok
+        image: local.insecure-registry.io/ngrok:1.0.0
+        imagePullPolicy: Always
+        volumeMounts:
+          - name: ngrok-config
+            mountPath: /root/.config/ngrok
+      imagePullSecrets:
+      - name: regcred
+      volumes:
+      - name: ngrok-config
+        configMap:
+          name: ngrok-config
+          items:
+          - key: "ngrok.yml"
+            path: "ngrok.yml"
