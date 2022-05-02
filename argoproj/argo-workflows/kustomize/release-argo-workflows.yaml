@@ -16,6 +16,8 @@ spec:
     server:
       extraArgs:
         - --auth-mode=server
+    controller:
+      containerRuntimeExecutor: "pns"
   interval: 1m0s
   targetNamespace: argo-workflows
 

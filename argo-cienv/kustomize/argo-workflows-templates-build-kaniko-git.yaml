@@ -16,8 +16,9 @@ spec:
       image: gcr.io/kaniko-project/executor:debug
       args:
       - --context={{inputs.parameters.app_repo}}
-      - --destination=local.insecure-registry.io/{{inputs.parameters.container_image}}:{{inputs.parameters.container_tag}}
+      - --destination=docker-registry.registry/{{inputs.parameters.container_image}}:{{inputs.parameters.container_tag}}
       - --context-sub-path={{inputs.parameters.subpath}}
+      - --insecure-registry=docker-registry.registry
       volumeMounts:
-        - name: regcred
+        - name: kanikoregcred
           mountPath: /kaniko/.docker/

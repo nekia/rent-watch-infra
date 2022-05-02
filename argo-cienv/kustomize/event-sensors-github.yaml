@@ -44,9 +44,9 @@ spec:
                 - name: subpath
                   value: "mediator"
               volumes:
-              - name: regcred
+              - name: kanikoregcred
                 secret:
-                  secretName: kaniko-regcred
+                  secretName: kanikoregcred
                   items:
                     - key: config.json
                       path: config.json
