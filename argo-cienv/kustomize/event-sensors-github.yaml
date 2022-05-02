@@ -9,6 +9,12 @@ spec:
   - name: test-dep
     eventSourceName: webhook
     eventName: example
+    filters:
+      data:
+        - path: "[body.commits.#.modified.#()#,body.commits.#.added.#()#,body.commits.#.removed.#()#]"
+          type: string
+          value:
+            - ".*mediator/.*"
   triggers:
   - template:
       name: trigger
@@ -32,9 +38,11 @@ spec:
                 - name: app_repo
                   value: git://github.com/
                 - name: container_image
-                  value: /my-airtng-node
+                  value: mediator
                 - name: container_tag
                   value: "1.0.0"
+                - name: subpath
+                  value: "mediator"
               volumes:
               - name: regcred
                 secret:
@@ -59,14 +67,11 @@ spec:
                         value: "{{workflow.parameters.container_image}}"
                       - name: container_tag
                         value: "{{workflow.parameters.container_tag}}"
+                      - name: subpath
+                        value: "{{workflow.parameters.subpath}}"
         parameters:
         - src:
             dependencyName: test-dep
             dataKey: body.repository.full_name
           dest: spec.arguments.parameters.0.value
           operation: append
-        - src:
-            dependencyName: test-dep
-            dataKey: body.sender.login
-          dest: spec.arguments.parameters.1.value
-          operation: prepend

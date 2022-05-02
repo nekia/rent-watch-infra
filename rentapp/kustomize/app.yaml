@@ -21,7 +21,7 @@ spec:
         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
       containers:
       - name: mediator
-        image: local.insecure-registry.io/nekia/mediator:1.0.0
+        image: local.insecure-registry.io/mediator:1.0.0
         imagePullPolicy: Always
         env:
           - name: NATS_SERVER_URL
@@ -52,7 +52,7 @@ spec:
         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
       containers:
       - name: scanner-linea
-        image: local.insecure-registry.io/nekia/scanner-linea:1.0.0
+        image: local.insecure-registry.io/scanner-linea:1.0.0
         imagePullPolicy: Always
         env:
           - name: NATS_SERVER_URL
@@ -102,7 +102,7 @@ spec:
         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
       containers:
       - name: scanner-suumo
-        image: local.insecure-registry.io/nekia/scanner-suumo:1.0.0
+        image: local.insecure-registry.io/scanner-suumo:1.0.0
         imagePullPolicy: Always
         env:
           - name: NATS_SERVER_URL
@@ -152,7 +152,7 @@ spec:
         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
       containers:
       - name: scanner-homes
-        image: local.insecure-registry.io/nekia/scanner-homes:1.0.0
+        image: local.insecure-registry.io/scanner-homes:1.0.0
         imagePullPolicy: Always
         env:
           - name: NATS_SERVER_URL
@@ -202,7 +202,7 @@ spec:
         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
       containers:
       - name: scanner-rstore
-        image: local.insecure-registry.io/nekia/scanner-rstore:1.0.0
+        image: local.insecure-registry.io/scanner-rstore:1.0.0
         imagePullPolicy: Always
         env:
           - name: NATS_SERVER_URL
@@ -300,7 +300,7 @@ spec:
         command: ['sh', '-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
       containers:
       - name: notifier
-        image: local.insecure-registry.io/nekia/notifier:1.0.0
+        image: local.insecure-registry.io/notifier:1.0.0
         imagePullPolicy: Always
         env:
           - name: NATS_SERVER_URL
@@ -352,7 +352,7 @@ spec:
     spec:
       containers:
       - name: cache-mgr
-        image: local.insecure-registry.io/nekia/cache-mgr:1.0.0
+        image: local.insecure-registry.io/cache-mgr:1.0.0
         imagePullPolicy: Always
         env:
           - name: REDIS_SERVER_URL

@@ -27,7 +27,7 @@ spec:
             command: ['sh', '-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
           containers:
           - name: crawler-rstore
-            image: local.insecure-registry.io/nekia/crawler-rstore:1.0.0
+            image: local.insecure-registry.io/crawler-rstore:1.0.0
             imagePullPolicy: Always
             env:
               - name: NATS_SERVER_URL

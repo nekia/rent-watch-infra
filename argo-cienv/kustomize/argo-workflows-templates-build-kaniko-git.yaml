@@ -11,11 +11,13 @@ spec:
       - name: app_repo
       - name: container_image
       - name: container_tag
+      - name: subpath
     container:
       image: gcr.io/kaniko-project/executor:debug
       args:
       - --context={{inputs.parameters.app_repo}}
-      - --destination={{inputs.parameters.container_image}}:{{inputs.parameters.container_tag}}
+      - --destination=local.insecure-registry.io/{{inputs.parameters.container_image}}:{{inputs.parameters.container_tag}}
+      - --context-sub-path={{inputs.parameters.subpath}}
       volumeMounts:
         - name: regcred
           mountPath: /kaniko/.docker/

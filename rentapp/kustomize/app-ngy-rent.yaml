@@ -21,7 +21,7 @@ spec:
         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
       containers:
       - name: scanner-homes-ngy-rent
-        image: local.insecure-registry.io/nekia/scanner-homes:1.0.0
+        image: local.insecure-registry.io/scanner-homes:1.0.0
         imagePullPolicy: Always
         env:
           - name: NATS_SERVER_URL
@@ -77,7 +77,7 @@ spec:
         command: ['sh', '-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
       containers:
       - name: notifier-ngy-rent
-        image: local.insecure-registry.io/nekia/notifier:1.0.0
+        image: local.insecure-registry.io/notifier:1.0.0
         imagePullPolicy: Always
         env:
           - name: NATS_SERVER_URL
