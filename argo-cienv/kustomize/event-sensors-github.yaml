@@ -11,7 +11,7 @@ spec:
     eventName: example
     filters:
       data:
-        - path: "[body.commits.#.modified.#()#,body.commits.#.added.#()#,body.commits.#.removed.#()#]"
+        - path: "[body.commits.#.modified.#()#, body.commits.#.added.#()#, body.commits.#.removed.#()#]"
           type: string
           value:
             - ".*mediator/.*"
@@ -46,9 +46,9 @@ spec:
               volumes:
               - name: regcred
                 secret:
-                  secretName: regcred
+                  secretName: kaniko-regcred
                   items:
-                    - key: dockerconfig.json
+                    - key: config.json
                       path: config.json
               templates:
               - name: build
