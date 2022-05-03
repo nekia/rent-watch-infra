@@ -18,6 +18,7 @@ spec:
         - --auth-mode=server
     controller:
       containerRuntimeExecutor: "pns"
+    singleNamespace: false
   interval: 1m0s
   targetNamespace: argo-workflows
 
