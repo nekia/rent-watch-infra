@@ -16,6 +16,7 @@ spec:
     server:
       extraArgs:
         - --auth-mode=server
+      serviceType: "LoadBalancer"
     controller:
       containerRuntimeExecutor: "pns"
     singleNamespace: false
