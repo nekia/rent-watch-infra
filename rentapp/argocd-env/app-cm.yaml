@@ -30,7 +30,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://www.homes.co.jp/chintai/imayori/list/?sortBy=%24imayori%3Awantmcf&prefectureId=13&cityIds=13101%2C13103%2C13104%2C13105%2C13109%2C13110%2C13112%2C13113%2C13114%2C13115%2C13116%2C13120%2C13203%2C13204&monthMoneyRoom=15&monthMoneyRoomHigh=30&moneyMaintenanceInclude=1&houseArea=50&newDate=1&mcfs=340501%2C340102&wantMcfs=113601%2C263101%2C293101&needsCodes=15",
+      "url": "https://www.homes.co.jp/chintai/imayori/list/?sortBy=%24imayori%3Awantmcf&prefectureId=13&cityIds=13101%2C13103%2C13104%2C13105%2C13109%2C13110%2C13112%2C13113%2C13114%2C13115%2C13116%2C13203%2C13204&monthMoneyRoom=15&monthMoneyRoomHigh=30&moneyMaintenanceInclude=1&houseArea=50&newDate=1&mcfs=340501%2C340102&wantMcfs=113601%2C263101%2C293101&needsCodes=15",
       "mode": "tky-rent"
     }
 ---
@@ -42,7 +42,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://suumo.jp/jj/chintai/ichiran/FR301FC001/?url=%2Fchintai%2Fichiran%2FFR301FC001%2F&ar=030&bs=040&pc=30&smk=&po1=25&po2=99&tc=0401303&tc=0400101&tc=0400104&tc=0401106&shkr1=03&shkr2=03&shkr3=03&shkr4=03&cb=15.0&ct=25.0&et=9999999&mb=55&mt=9999999&cn=9999999&ta=13&sc=13101&sc=13103&sc=13104&sc=13105&sc=13113&sc=13109&sc=13110&sc=13112&sc=13114&sc=13115&sc=13120&sc=13116&sc=13203&sc=13204",
+      "url": "https://suumo.jp/jj/chintai/ichiran/FR301FC001/?url=%2Fchintai%2Fichiran%2FFR301FC001%2F&ar=030&bs=040&pc=30&smk=&po1=25&po2=99&tc=0401303&tc=0400101&tc=0400104&tc=0401106&shkr1=03&shkr2=03&shkr3=03&shkr4=03&cb=15.0&ct=25.0&et=9999999&mb=55&mt=9999999&cn=9999999&ta=13&sc=13101&sc=13103&sc=13104&sc=13105&sc=13113&sc=13109&sc=13110&sc=13112&sc=13114&sc=13115&sc=13116&sc=13203&sc=13204",
       "mode": "tky-rent"
     }
 ---
@@ -79,10 +79,9 @@ data:
   setting.json: |
     {
       "max_room_price": 23,
-      "min_room_size": 50,
+      "min_room_size": 57,
       "min_floor_level": 2,
       "max_building_age": 35,
-      "max_notifies_at_once": 200,
       "enable_notify": true
     }
 ---
@@ -110,6 +109,5 @@ data:
       "min_room_size": 57,
       "min_floor_level": 2,
       "max_building_age": 35,
-      "max_notifies_at_once": 200,
       "enable_notify": true
     }
