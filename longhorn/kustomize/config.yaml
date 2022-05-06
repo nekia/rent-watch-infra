@@ -41,5 +41,13 @@ data:
     default-data-path: /app/longhorn
     storage-over-provisioning-percentage: 100
     default-replica-count: 2
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: longhorn-frontend
+  namespace: longhorn-system
+spec:
+  type: LoadBalancer
 
 
