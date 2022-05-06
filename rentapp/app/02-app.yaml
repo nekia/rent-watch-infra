@@ -282,45 +282,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nats-server
-  labels:
-    app: nats-server
-  namespace: rentapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nats-server
-  template:
-    metadata:
-      labels:
-        app: nats-server
-    spec:
-      containers:
-      - name: nats-server
-        image: nats:2.7.4
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 4222
-        args:
-        - "-js"
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: nats-server
-  namespace: rentapp
-spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 4222
-  selector:
-    app: nats-server
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: notifier
   labels:
     app: notifier

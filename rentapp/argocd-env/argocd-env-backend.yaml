@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: backend
+  namespace: argo-cd
+spec:
+  destination:
+    namespace: argo-cd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: rentapp/backend
+    repoURL: https://github.com/nekia/rent-watch-infra
+    targetRevision: HEAD
