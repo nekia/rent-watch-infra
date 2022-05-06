@@ -6,7 +6,7 @@ metadata:
   # labels:
   #   app: crawler-goodrooms
 spec:
-  schedule: "15 0-14,22-23 * * *"
+  schedule: "45 0-14,22-23 * * *"
   jobTemplate:
     spec:
       # selector:
