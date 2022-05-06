@@ -61,6 +61,18 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: crawler-goodrooms-config-tky-rent
+  namespace: rentapp
+data:
+  setting.json: |-
+    {
+      "url": "https://www.goodrooms.jp/tokyo/search/area_list?required_condition=is_south_faced-is_more_than_second_floor-is_more_than_second_floor&small_area_cd=1000-1001-1002-1003-1004-1005-1020-1021-1030-1031-1032-1033-1040-1052-1053&rent_select=1&is_contain_full=0&rental_fee=150000-&room_space=50-&p=2",
+      "mode": "tky-rent"
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: notifier-config-ngy-rent
   namespace: rentapp
 data:

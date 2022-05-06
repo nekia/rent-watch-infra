@@ -232,6 +232,56 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: scanner-goodrooms
+  labels:
+    app: scanner-goodrooms
+  namespace: rentapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scanner-goodrooms
+  template:
+    metadata:
+      labels:
+        app: scanner-goodrooms
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      containers:
+      - name: scanner-goodrooms
+        image: local.insecure-registry.io/scanner-goodrooms:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: NATS_SUBJECT_ROOMURL
+            value: room-goodrooms-tky-rent
+          - name: NATS_SUBJECT_ROOMDETAIL
+            value: roomdetails-tky-rent
+        ports:
+        - containerPort: 3000
+      imagePullSecrets:
+      - name: regcred
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: scanner-goodrooms
+  namespace: rentapp
+spec:
+  ports:
+  - name: "http-port"
+    protocol: TCP
+    port: 3000
+  selector:
+    app: scanner-goodrooms
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: nats-server
   labels:
     app: nats-server
@@ -296,6 +346,9 @@ spec:
         image: busybox:1.28
         command: ['sh', '-c', 'until nc -z scanner-homes 3000; do echo waiting for scanner; sleep 2; done;']
       - name: init-myservice4
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z scanner-goodrooms 3000; do echo waiting for scanner; sleep 2; done;']
+      - name: init-myservice5
         image: busybox:1.28
         command: ['sh', '-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
       containers:
