@@ -1,0 +1,196 @@
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: crowling-sites
+  namespace: rentapp
+spec:
+  schedule: "0 7-23 * * *"
+  timezone: "Asia/Tokyo"   # Default to local machine timezone
+  # startingDeadlineSeconds: 0
+  concurrencyPolicy: "Forbid"      # Default to "Allow"
+  successfulJobsHistoryLimit: 4     # Default 3
+  failedJobsHistoryLimit: 4         # Default 1
+  # suspend: false                    # Set to "true" to suspend scheduling
+  workflowSpec:
+    entrypoint: step-step
+    templates:
+    - name: step-step
+      steps:
+      # - - name: hello1            # hello1 is run before the following steps
+      #     template: whalesay
+      #     arguments:
+      #       parameters:
+      #       - name: message
+      #         value: "hello1"
+      #     continueOn:
+      #       failed: true
+      - - name: homes
+          template: homes
+          continueOn:
+            failed: true
+      - - name: suumo
+          template: suumo
+          continueOn:
+            failed: true
+      - - name: linea
+          template: linea
+          continueOn:
+            failed: true
+      - - name: goodrooms
+          template: goodrooms
+          continueOn:
+            failed: true
+      - - name: rstore
+          template: rstore
+          continueOn:
+            failed: true
+      - - name: homes-ngy
+          template: homes-ngy
+          continueOn:
+            failed: true
+    - name: homes
+      container:
+        image: local.insecure-registry.io/crawler-homes:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: CACHE_MGR_URL
+            value: cache-mgr:50051
+        command: [npm]
+        args: ["start"]
+        volumeMounts:
+        - name: crawler-homes-config-tky-rent
+          mountPath: /usr/src/app/setting
+          readOnly: true
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh']
+        args: ['-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      - name: init-myservice2
+        image: busybox:1.28
+        command: ['sh']
+        args: ['-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
+    - name: suumo
+      container:
+        image: local.insecure-registry.io/crawler-suumo:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: CACHE_MGR_URL
+            value: cache-mgr:50051
+        command: [npm]
+        args: ["start"]
+        volumeMounts:
+        - name: crawler-suumo-config-tky-rent
+          mountPath: /usr/src/app/setting
+          readOnly: true
+    - name: linea
+      container:
+        image: local.insecure-registry.io/crawler-linea:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: CACHE_MGR_URL
+            value: cache-mgr:50051
+        command: [npm]
+        args: ["start"]
+        volumeMounts:
+        - name: crawler-linea-config-tky-rent
+          mountPath: /usr/src/app/setting
+          readOnly: true
+    - name: goodrooms
+      container:
+        image: local.insecure-registry.io/crawler-goodrooms:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: CACHE_MGR_URL
+            value: cache-mgr:50051
+        command: [npm]
+        args: ["start"]
+        volumeMounts:
+        - name: crawler-goodrooms-config-tky-rent
+          mountPath: /usr/src/app/setting
+          readOnly: true
+    - name: rstore
+      container:
+        image: local.insecure-registry.io/crawler-rstore:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: CACHE_MGR_URL
+            value: cache-mgr:50051
+        command: [npm]
+        args: ["start"]
+        volumeMounts:
+        - name: crawler-rstore-config-tky-rent
+          mountPath: /usr/src/app/setting
+          readOnly: true
+    - name: homes-ngy
+      container:
+        image: local.insecure-registry.io/crawler-homes:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: CACHE_MGR_URL
+            value: cache-mgr:50051
+        command: [npm]
+        args: ["start"]
+        volumeMounts:
+        - name: crawler-homes-config-ngy-rent
+          mountPath: /usr/src/app/setting
+          readOnly: true
+    # - name: whalesay
+    #   inputs:
+    #     parameters:
+    #     - name: message
+    #   container:
+    #     image: alpine:3.6
+    #     command: [echo]
+    #     args: ["{{inputs.parameters.message}}"]
+    volumes:
+    - name: crawler-homes-config-tky-rent
+      configMap:
+        name: crawler-homes-config-tky-rent
+        items:
+        - key: "setting.json"
+          path: "setting.json"
+    - name: crawler-suumo-config-tky-rent
+      configMap:
+        name: crawler-suumo-config-tky-rent
+        items:
+        - key: "setting.json"
+          path: "setting.json"
+    - name: crawler-linea-config-tky-rent
+      configMap:
+        name: crawler-linea-config-tky-rent
+        items:
+        - key: "setting.json"
+          path: "setting.json"
+    - name: crawler-goodrooms-config-tky-rent
+      configMap:
+        name: crawler-goodrooms-config-tky-rent
+        items:
+        - key: "setting.json"
+          path: "setting.json"
+    - name: crawler-rstore-config-tky-rent
+      configMap:
+        name: crawler-rstore-config-tky-rent
+        items:
+        - key: "setting.json"
+          path: "setting.json"
+    - name: crawler-homes-config-ngy-rent
+      configMap:
+        name: crawler-homes-config-ngy-rent
+        items:
+        - key: "setting.json"
+          path: "setting.json"
+    imagePullSecrets:
+    - name: regcred
