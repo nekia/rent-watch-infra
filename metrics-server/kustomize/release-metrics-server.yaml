@@ -1,0 +1,24 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: metrics-server
+  namespace: metrics-server
+spec:
+  chart:
+    spec:
+      chart: metrics-server
+      sourceRef:
+        kind: HelmRepository
+        name: metrics-server
+      version: 3.8.2
+  values:
+    service:
+      type: LoadBalancer
+    defaultArgs:
+      - --cert-dir=/tmp
+      - --kubelet-preferred-address-types=InternalIP
+      - --secure-port=4443
+      - --v=2
+      - --kubelet-insecure-tls
+  interval: 1m0s
