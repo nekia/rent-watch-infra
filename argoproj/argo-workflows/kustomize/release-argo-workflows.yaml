@@ -18,7 +18,7 @@ spec:
         - --auth-mode=server
       serviceType: "LoadBalancer"
     controller:
-      containerRuntimeExecutor: "pns"
+      containerRuntimeExecutor: "emissary"
     singleNamespace: false
   interval: 1m0s
   targetNamespace: argo-workflows
