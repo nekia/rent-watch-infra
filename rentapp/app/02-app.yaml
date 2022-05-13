@@ -322,9 +322,9 @@ spec:
           - name: NATS_CONSUMER_NAME
             value: myconsumer
           - name: NATS_CONSUMER_BATCH_SIZE
-            value: "10"
+            value: "20"
           - name: NATS_CONSUMER_BATCH_DURATION
-            value: "60000"
+            value: "600000"
           - name: CACHE_MGR_URL
             value: cache-mgr:50051
           - name: LINE_NOTIFY_TOKEN
