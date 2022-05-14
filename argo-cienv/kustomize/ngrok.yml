@@ -7,3 +7,7 @@ tunnels:
     proto: http
     addr: webhook-eventsource-svc.argo-events:12000
     inspect: false
+  # argocd:
+  #   proto: http
+  #   addr: argo-cd-argocd-server.argo-cd
+  #   inspect: false
