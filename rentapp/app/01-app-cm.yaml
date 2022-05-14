@@ -42,7 +42,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://suumo.jp/jj/chintai/ichiran/FR301FC001/?url=%2Fchintai%2Fichiran%2FFR301FC001%2F&ar=030&bs=040&pc=30&smk=&po1=25&po2=99&tc=0401303&tc=0400101&tc=0400104&tc=0401106&shkr1=03&shkr2=03&shkr3=03&shkr4=03&cb=15.0&ct=25.0&et=9999999&mb=55&mt=9999999&cn=9999999&ta=13&sc=13101&sc=13103&sc=13104&sc=13105&sc=13113&sc=13109&sc=13110&sc=13112&sc=13114&sc=13115&sc=13116&sc=13203&sc=13204",
+      "url": "https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&pc=30&smk=&po1=25&po2=99&tc=0401303&tc=0400104&shkr1=03&shkr2=03&shkr3=03&shkr4=03&sc=13101&sc=13103&sc=13104&sc=13105&sc=13113&sc=13109&sc=13110&sc=13112&sc=13114&sc=13115&sc=13116&sc=13203&sc=13204&ta=13&cb=17.0&ct=25.0&ts=1&et=15&mb=55&mt=9999999&cn=30&tc=0400101&tc=0401106&fw2=",
       "mode": "tky-rent"
     }
 ---
