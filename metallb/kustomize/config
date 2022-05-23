@@ -2,4 +2,4 @@ address-pools:
   - name: default
     protocol: layer2
     addresses:
-    - 192.168.2.2-192.168.2.99
+    - 192.168.0.202-192.168.0.250
