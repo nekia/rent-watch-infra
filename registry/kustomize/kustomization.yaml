@@ -1,0 +1,4 @@
+# kustomization.yml
+namespace: registry
+resources:
+  - docker-registry.yaml
