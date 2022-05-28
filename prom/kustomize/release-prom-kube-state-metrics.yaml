@@ -1,0 +1,19 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: prom-kube-state-metrics
+  namespace: prom
+spec:
+  chart:
+    spec:
+      chart: kube-state-metrics
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+      version: 4.7.0
+  values:
+    service:
+      type: "LoadBalancer"
+  interval: 1m0s
+

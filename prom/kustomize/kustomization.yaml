@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- repo.yaml
+- namespace-prom.yaml
+- release-prom-node-exporter.yaml
+- release-prom-kube-state-metrics.yaml
+- release-prom-nats-exporter.yaml
