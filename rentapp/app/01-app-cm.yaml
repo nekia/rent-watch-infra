@@ -66,7 +66,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://www.goodrooms.jp/tokyo/search/area_list?required_condition=is_south_faced-is_more_than_second_floor-is_more_than_second_floor&small_area_cd=1000-1001-1002-1003-1004-1005-1020-1021-1030-1031-1032-1033-1040-1052-1053&rent_select=1&is_contain_full=0&rental_fee=150000-&room_space=50-&p=2",
+      "url": "https://www.goodrooms.jp/tokyo/search/area_list/?required_condition=is_south_faced-is_more_than_second_floor-is_more_than_second_floor&small_area_cd=1000-1001-1002-1003-1004-1005-1020-1021-1030-1031-1033-1040-1052-1053&rent_select=1&is_contain_full=0&rental_fee=150000-&room_space=50-",
       "mode": "tky-rent"
     }
 ---
@@ -91,6 +91,7 @@ data:
   setting.json: |
     {
       "max_room_price": 23,
+      "min_room_price": 14,
       "min_room_size": 57,
       "min_floor_level": 2,
       "max_building_age": 35,
@@ -119,9 +120,10 @@ data:
   setting.json: |
     {
       "max_room_price": 23,
+      "min_room_price": 16,
       "min_room_size": 57,
       "min_floor_level": 2,
       "max_building_age": 35,
-      "min_rank": 1,
+      "min_rank": 2,
       "enable_notify": true
     }
