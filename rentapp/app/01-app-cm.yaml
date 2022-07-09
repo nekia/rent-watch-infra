@@ -94,6 +94,7 @@ data:
       "min_room_size": 57,
       "min_floor_level": 2,
       "max_building_age": 35,
+      "min_rank": 1,
       "enable_notify": true
     }
 ---
@@ -121,5 +122,6 @@ data:
       "min_room_size": 57,
       "min_floor_level": 2,
       "max_building_age": 35,
+      "min_rank": 1,
       "enable_notify": true
     }

@@ -75,6 +75,9 @@ spec:
       - name: init-myservice3
         image: busybox:1.28
         command: ['sh', '-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
+      - name: init-myservice4
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z area-info-mgr 50051; do echo waiting for area-info-mgr; sleep 2; done;']
       containers:
       - name: notifier-ngy-rent
         image: local.insecure-registry.io/notifier:1.0.0
@@ -90,6 +93,8 @@ spec:
             value: "600000"
           - name: CACHE_MGR_URL
             value: cache-mgr:50051
+          - name: AREA_INFO_MGR_URL
+            value: area-info-mgr:50051
           - name: LINE_NOTIFY_TOKEN
             valueFrom:
               secretKeyRef:

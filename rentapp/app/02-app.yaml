@@ -312,6 +312,9 @@ spec:
       - name: init-myservice5
         image: busybox:1.28
         command: ['sh', '-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
+      - name: init-myservice6
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z area-info-mgr 50051; do echo waiting for area-info-mgr; sleep 2; done;']
       containers:
       - name: notifier
         image: local.insecure-registry.io/notifier:1.0.0
@@ -327,6 +330,8 @@ spec:
             value: "600000"
           - name: CACHE_MGR_URL
             value: cache-mgr:50051
+          - name: AREA_INFO_MGR_URL
+            value: area-info-mgr:50051
           - name: LINE_NOTIFY_TOKEN
             valueFrom:
               secretKeyRef:
@@ -391,3 +396,53 @@ spec:
     targetPort: 50051
   selector:
     app: cache-mgr
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: area-info-mgr
+  labels:
+    app: area-info-mgr
+  namespace: rentapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: area-info-mgr
+  template:
+    metadata:
+      labels:
+        app: area-info-mgr
+    spec:
+      containers:
+      - name: area-info-mgr
+        image: local.insecure-registry.io/area-info-mgr:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: REDIS_SERVER_URL
+            value: "redis://rentapp:6379"
+          - name: IMI_SERVER_URL
+            value: "http://127.0.0.1:8080"
+        ports:
+        - containerPort: 50051
+      - name: imi-server
+        image: local.insecure-registry.io/imi-server:1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+      - name: regcred
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: area-info-mgr
+  namespace: rentapp
+spec:
+  ports:
+  - name: "http-port"
+    protocol: TCP
+    port: 50051
+    targetPort: 50051
+  selector:
+    app: area-info-mgr
