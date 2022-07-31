@@ -73,6 +73,18 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: crawler-mitsui-config-tky-rent
+  namespace: rentapp
+data:
+  setting.json: |-
+    {
+      "url": "https://www.mitsui-chintai.co.jp/rf/result?ku=(1,22),(1,10),(1,11),(1,21),(1,17),(1,23),(1,14),(1,9),(1,12),(1,19),(1,18)&kn=2&res=150&reb=250&ms=(50,0)&dir=3&flo=2&cms=1dvxwqtyww&get=ward",
+      "mode": "tky-rent"
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: notifier-config-ngy-rent
   namespace: rentapp
 data:
