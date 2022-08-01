@@ -85,6 +85,18 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: crawler-rnet-config-tky-rent
+  namespace: rentapp
+data:
+  setting.json: |-
+    {
+      "url": "https://www.rnt.co.jp/search/address/",
+      "mode": "tky-rent"
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: notifier-config-ngy-rent
   namespace: rentapp
 data:

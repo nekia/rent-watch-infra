@@ -332,6 +332,56 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: scanner-rnet
+  labels:
+    app: scanner-rnet
+  namespace: rentapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scanner-rnet
+  template:
+    metadata:
+      labels:
+        app: scanner-rnet
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      containers:
+      - name: scanner-rnet
+        image: local.insecure-registry.io/scanner-rnet:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: NATS_SUBJECT_ROOMURL
+            value: room-rnet-tky-rent
+          - name: NATS_SUBJECT_ROOMDETAIL
+            value: roomdetails-tky-rent
+        ports:
+        - containerPort: 3000
+      imagePullSecrets:
+      - name: regcred
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: scanner-rnet
+  namespace: rentapp
+spec:
+  ports:
+  - name: "http-port"
+    protocol: TCP
+    port: 3000
+  selector:
+    app: scanner-rnet
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: notifier
   labels:
     app: notifier
