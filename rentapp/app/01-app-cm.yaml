@@ -97,6 +97,18 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: crawler-ken-config-tky-rent
+  namespace: rentapp
+data:
+  setting.json: |-
+    {
+      "url": "https://www.kencorp.co.jp/housing/rent/search/result/?search_by=room&search_type=rent&page=1&per_page=10&areas=roppongi01&areas=roppongi02&areas=roppongi03&areas=roppongi04&areas=roppongi05&areas=shibuya01&areas=shibuya02&areas=shibuya03&areas=shibuya04&areas=shibuya05&areas=shibuya06&areas=meji01&areas=meji02&areas=meji03&areas=meji04&areas=meji05&areas=jiyu01&areas=jiyu03&areas=jiyu04&areas=jiyu02&areas=jiyu05&areas=jiyu06&areas=ginza01&areas=ginza02&areas=ginza03&areas=ginza04&areas=ginza05&areas=ginza06&areas=kichi01&areas=kichi02&areas=kichi03&areas=kichi04&areas=kichi05&rent_min=170000&rent_max=250000&rent_admin=1&footprint_min=50&build_type=apartment&kodawari=is_south_direction&kodawari=is_2nd_floor_higher&kodawari=excludes_fixed&sort_key=_created_at",
+      "mode": "tky-rent"
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: notifier-config-ngy-rent
   namespace: rentapp
 data:

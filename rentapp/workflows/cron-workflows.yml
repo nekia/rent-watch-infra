@@ -44,6 +44,10 @@ spec:
           template: rnet
           continueOn:
             failed: true
+      - - name: ken
+          template: ken
+          continueOn:
+            failed: true
       - - name: homes-ngy
           template: homes-ngy
           continueOn:
@@ -162,6 +166,21 @@ spec:
         - name: crawler-rnet-config-tky-rent
           mountPath: /usr/src/app/setting
           readOnly: true
+    - name: ken
+      container:
+        image: local.insecure-registry.io/crawler-ken:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: CACHE_MGR_URL
+            value: cache-mgr:50051
+        command: [npm]
+        args: ["start"]
+        volumeMounts:
+        - name: crawler-ken-config-tky-rent
+          mountPath: /usr/src/app/setting
+          readOnly: true
     - name: homes-ngy
       container:
         image: local.insecure-registry.io/crawler-homes:1.0.0
@@ -225,6 +244,12 @@ spec:
     - name: crawler-rnet-config-tky-rent
       configMap:
         name: crawler-rnet-config-tky-rent
+        items:
+        - key: "setting.json"
+          path: "setting.json"
+    - name: crawler-ken-config-tky-rent
+      configMap:
+        name: crawler-ken-config-tky-rent
         items:
         - key: "setting.json"
           path: "setting.json"
