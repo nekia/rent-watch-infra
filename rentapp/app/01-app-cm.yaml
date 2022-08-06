@@ -109,6 +109,18 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: crawler-bs-config-tky-rent
+  namespace: rentapp
+data:
+  setting.json: |-
+    {
+      "url": "https://www.bluestudio.jp/rentsale/#!/rent/%E9%83%BD%E5%BF%83%E4%BA%94%E5%8C%BA,%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%8B/15%E3%80%9C20%E4%B8%87%E5%86%86,20%E3%80%9C25%E4%B8%87%E5%86%86/50%E3%80%9C70%E3%8E%A1,70%E3%80%9C100%E3%8E%A1/-/false/true/",
+      "mode": "tky-rent"
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: notifier-config-ngy-rent
   namespace: rentapp
 data:
