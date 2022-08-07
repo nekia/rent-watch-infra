@@ -121,6 +121,25 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: crawler-td-config-tky-rent
+  namespace: rentapp
+data:
+  setting.json: |-
+    {
+      "url": [
+        "https://tokyo-designers.com/desingers/15-200000",
+        "https://tokyo-designers.com/desingers/20-250000",
+        "https://tokyo-designers.com/high-grade/15-200000",
+        "https://tokyo-designers.com/high-grade/20-250000",
+        "https://tokyo-designers.com/renovation/15-200000",
+        "https://tokyo-designers.com/renovation/20-250000"
+      ],
+      "mode": "tky-rent"
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: notifier-config-ngy-rent
   namespace: rentapp
 data:
