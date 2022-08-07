@@ -105,6 +105,13 @@ spec:
         app: scanner-suumo
         apptype: scanner
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: scanner-homes
+            topologyKey: kubernetes.io/hostname
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
@@ -163,6 +170,13 @@ spec:
         app: scanner-homes
         apptype: scanner
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: scanner-suumo
+            topologyKey: kubernetes.io/hostname
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
