@@ -45,7 +45,15 @@ spec:
     metadata:
       labels:
         app: scanner-linea
+        apptype: scanner
     spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            apptype: scanner
       initContainers:
       - name: init-myservice
         image: busybox:1.28
@@ -95,7 +103,15 @@ spec:
     metadata:
       labels:
         app: scanner-suumo
+        apptype: scanner
     spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            apptype: scanner
       initContainers:
       - name: init-myservice
         image: busybox:1.28
@@ -145,7 +161,15 @@ spec:
     metadata:
       labels:
         app: scanner-homes
+        apptype: scanner
     spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            apptype: scanner
       initContainers:
       - name: init-myservice
         image: busybox:1.28
@@ -195,7 +219,15 @@ spec:
     metadata:
       labels:
         app: scanner-rstore
+        apptype: scanner
     spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            apptype: scanner
       initContainers:
       - name: init-myservice
         image: busybox:1.28
@@ -245,7 +277,15 @@ spec:
     metadata:
       labels:
         app: scanner-goodrooms
+        apptype: scanner
     spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            apptype: scanner
       initContainers:
       - name: init-myservice
         image: busybox:1.28
@@ -295,7 +335,15 @@ spec:
     metadata:
       labels:
         app: scanner-mitsui
+        apptype: scanner
     spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            apptype: scanner
       initContainers:
       - name: init-myservice
         image: busybox:1.28
@@ -345,7 +393,15 @@ spec:
     metadata:
       labels:
         app: scanner-rnet
+        apptype: scanner
     spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            apptype: scanner
       initContainers:
       - name: init-myservice
         image: busybox:1.28
@@ -395,7 +451,15 @@ spec:
     metadata:
       labels:
         app: scanner-ken
+        apptype: scanner
     spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            apptype: scanner
       initContainers:
       - name: init-myservice
         image: busybox:1.28
@@ -445,7 +509,15 @@ spec:
     metadata:
       labels:
         app: scanner-bs
+        apptype: scanner
     spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            apptype: scanner
       initContainers:
       - name: init-myservice
         image: busybox:1.28

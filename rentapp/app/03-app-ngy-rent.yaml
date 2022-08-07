@@ -14,7 +14,15 @@ spec:
     metadata:
       labels:
         app: scanner-homes-ngy-rent
+        apptype: scanner
     spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            apptype: scanner
       initContainers:
       - name: init-myservice
         image: busybox:1.28
