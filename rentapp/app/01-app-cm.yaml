@@ -140,6 +140,18 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: crawler-tpo-config-tky-rent
+  namespace: rentapp
+data:
+  setting.json: |-
+    {
+      "url": "https://www.t-p-o.com/rent/?type=rent&area_id%5B%5D=1301&area_id%5B%5D=1302&area_id%5B%5D=1303&area_id%5B%5D=1304&area_id%5B%5D=1306&area_id%5B%5D=1307&area_id%5B%5D=1308&area_id%5B%5D=1309&area_id%5B%5D=1310&area_id%5B%5D=1311&area_id%5B%5D=1314&area_id%5B%5D=1316&area_id%5B%5D=1300&price_min=&price_max=&exclusive_area_min=&exclusive_area_max=&property_name=",
+      "mode": "tky-rent"
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: notifier-config-ngy-rent
   namespace: rentapp
 data:

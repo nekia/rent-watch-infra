@@ -56,6 +56,10 @@ spec:
           template: td
           continueOn:
             failed: true
+      - - name: tpo
+          template: tpo
+          continueOn:
+            failed: true
       - - name: homes-ngy
           template: homes-ngy
           continueOn:
@@ -219,6 +223,21 @@ spec:
         - name: crawler-td-config-tky-rent
           mountPath: /usr/src/app/setting
           readOnly: true
+    - name: tpo
+      container:
+        image: local.insecure-registry.io/crawler-tpo:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: CACHE_MGR_URL
+            value: cache-mgr:50051
+        command: [npm]
+        args: ["start"]
+        volumeMounts:
+        - name: crawler-tpo-config-tky-rent
+          mountPath: /usr/src/app/setting
+          readOnly: true
     - name: homes-ngy
       container:
         image: local.insecure-registry.io/crawler-homes:1.0.0
@@ -300,6 +319,12 @@ spec:
     - name: crawler-td-config-tky-rent
       configMap:
         name: crawler-td-config-tky-rent
+        items:
+        - key: "setting.json"
+          path: "setting.json"
+    - name: crawler-tpo-config-tky-rent
+      configMap:
+        name: crawler-tpo-config-tky-rent
         items:
         - key: "setting.json"
           path: "setting.json"
