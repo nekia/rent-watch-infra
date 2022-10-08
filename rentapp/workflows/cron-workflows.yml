@@ -60,10 +60,10 @@ spec:
           template: tpo
           continueOn:
             failed: true
-      - - name: homes-ngy
-          template: homes-ngy
-          continueOn:
-            failed: true
+      # - - name: homes-ngy
+      #     template: homes-ngy
+      #     continueOn:
+      #       failed: true
     - name: homes
       container:
         image: local.insecure-registry.io/crawler-homes:1.0.0

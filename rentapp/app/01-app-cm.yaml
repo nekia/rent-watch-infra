@@ -18,7 +18,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://www.r-store.jp/search/?&sb_get_full1=true&sb_purpose1%5B%5D=R&sb_r_min=150000&sb_r_max=250000&sb_area_up=55&sb_kodawari_category%5B%5D=2%E9%9A%8E%E4%BB%A5%E4%B8%8A&sb_c%5B%5D=13101&sb_c%5B%5D=13103&sb_c%5B%5D=13104&sb_c%5B%5D=13105&sb_c%5B%5D=13113&sb_c%5B%5D=13109&sb_c%5B%5D=13110&sb_c%5B%5D=13112&sb_c%5B%5D=13114&sb_c%5B%5D=13115&sb_c%5B%5D=13120&sb_c%5B%5D=13116&sb_c%5B%5D=13203&sb_c%5B%5D=13204&sb_get_full2=true&sb_purpose2%5B%5D=RO&sb_purpose2%5B%5D=RS&sort_key=1&view_num=10&get_full=true",
+      "url": "https://www.r-store.jp/search/?&sb_get_full1=true&sb_purpose1%5B%5D=R&sb_r_min=150000&sb_r_max=250000&sb_area_up=55&sb_kodawari_category%5B%5D=2%E9%9A%8E%E4%BB%A5%E4%B8%8A&sb_c%5B%5D=13104&sb_c%5B%5D=13105&sb_c%5B%5D=13113&sb_c%5B%5D=13109&sb_c%5B%5D=13110&sb_c%5B%5D=13114&sb_c%5B%5D=13115&sb_c%5B%5D=13116&sb_c%5B%5D=13203&sb_c%5B%5D=13204&sb_get_full2=true&sb_purpose2%5B%5D=RO&sb_purpose2%5B%5D=RS&sort_key=1&view_num=10&get_full=true",
       "mode": "tky-rent"
     }
 ---
@@ -30,7 +30,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://www.homes.co.jp/chintai/imayori/list/?sortBy=%24imayori%3Awantmcf&prefectureId=13&cityIds=13101%2C13103%2C13104%2C13105%2C13109%2C13110%2C13112%2C13113%2C13114%2C13115%2C13116%2C13203%2C13204&monthMoneyRoom=15&monthMoneyRoomHigh=30&moneyMaintenanceInclude=1&houseArea=50&newDate=1&mcfs=340501%2C340102&wantMcfs=113601%2C263101%2C293101&needsCodes=15",
+      "url": "https://www.homes.co.jp/chintai/imayori/list/?sortBy=%24imayori%3Awantmcf&prefectureId=13&cityIds=13104%2C13105%2C13109%2C13110%2C13113%2C13114%2C13115%2C13116%2C13203%2C13204&monthMoneyRoom=15&monthMoneyRoomHigh=30&moneyMaintenanceInclude=1&houseArea=50&newDate=1&mcfs=340102&needsCodes=15",
       "mode": "tky-rent"
     }
 ---
@@ -42,7 +42,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&pc=30&smk=&po1=25&po2=99&tc=0401303&tc=0400104&shkr1=03&shkr2=03&shkr3=03&shkr4=03&sc=13101&sc=13103&sc=13104&sc=13105&sc=13113&sc=13109&sc=13110&sc=13112&sc=13114&sc=13115&sc=13116&sc=13203&sc=13204&ta=13&cb=17.0&ct=25.0&ts=1&et=15&mb=55&mt=9999999&cn=30&tc=0400101&tc=0401106&fw2=",
+      "url": "https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&fw2=&pc=30&po1=25&po2=99&ta=13&sc=13104&sc=13105&sc=13113&sc=13109&sc=13110&sc=13114&sc=13115&sc=13116&sc=13203&sc=13204&ts=1&cb=17.0&ct=25.0&et=15&mb=55&mt=9999999&cn=30&tc=0401303&tc=0400101&tc=0401106&shkr1=03&shkr2=03&shkr3=03&shkr4=03",
       "mode": "tky-rent"
     }
 ---
@@ -66,7 +66,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://www.goodrooms.jp/tokyo/search/area_list/?required_condition=is_south_faced-is_more_than_second_floor-is_more_than_second_floor&small_area_cd=1000-1001-1002-1003-1004-1005-1020-1021-1030-1031-1033-1040-1052-1053&rent_select=1&is_contain_full=0&rental_fee=150000-&room_space=50-",
+      "url": "https://www.goodrooms.jp/tokyo/search/area_list/?required_condition=is_more_than_second_floor-is_more_than_second_floor&small_area_cd=1003-1004-1005-1020-1021-1031-1033-1040-1052-1053&rent_select=1&is_contain_full=0&rental_fee=150000-&room_space=50-",
       "mode": "tky-rent"
     }
 ---
@@ -78,7 +78,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://www.mitsui-chintai.co.jp/rf/result?ku=(1,22),(1,10),(1,11),(1,21),(1,17),(1,23),(1,14),(1,9),(1,12),(1,19),(1,18)&kn=2&res=150&reb=250&ms=(50,0)&dir=3&flo=2&cms=1dvxwqtyww&get=ward",
+      "url": "https://www.mitsui-chintai.co.jp/rf/result?ku=(1,10),(1,11),(1,21),(1,23),(1,9),(1,12),(1,19),(1,18)&kn=2&res=150&reb=250&ms=(50,0)&dir=3&flo=2&cms=1dvxwqtyww&get=ward",
       "mode": "tky-rent"
     }
 ---
@@ -102,7 +102,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://www.kencorp.co.jp/housing/rent/search/result/?search_by=room&search_type=rent&page=1&per_page=10&areas=roppongi01&areas=roppongi02&areas=roppongi03&areas=roppongi04&areas=roppongi05&areas=shibuya01&areas=shibuya02&areas=shibuya03&areas=shibuya04&areas=shibuya05&areas=shibuya06&areas=meji01&areas=meji02&areas=meji03&areas=meji04&areas=meji05&areas=jiyu01&areas=jiyu03&areas=jiyu04&areas=jiyu02&areas=jiyu05&areas=jiyu06&areas=ginza01&areas=ginza02&areas=ginza03&areas=ginza04&areas=ginza05&areas=ginza06&areas=kichi01&areas=kichi02&areas=kichi03&areas=kichi04&areas=kichi05&rent_min=170000&rent_max=250000&rent_admin=1&footprint_min=50&build_type=apartment&kodawari=is_south_direction&kodawari=is_2nd_floor_higher&kodawari=excludes_fixed&sort_key=_created_at",
+      "url": "https://www.kencorp.co.jp/housing/rent/search/result/?search_by=room&search_type=rent&page=1&per_page=10&areas=roppongi01&areas=roppongi02&areas=roppongi03&areas=roppongi04&areas=roppongi05&areas=shibuya01&areas=shibuya02&areas=shibuya03&areas=shibuya04&areas=shibuya05&areas=shibuya06&areas=meji01&areas=meji02&areas=meji03&areas=meji04&areas=meji05&areas=jiyu01&areas=jiyu03&areas=jiyu04&areas=jiyu02&areas=jiyu05&areas=jiyu06&areas=ginza01&areas=ginza02&areas=ginza03&areas=ginza04&areas=ginza05&areas=ginza06&areas=kichi01&areas=kichi02&areas=kichi03&areas=kichi04&areas=kichi05&rent_min=170000&rent_max=250000&rent_admin=1&footprint_min=50&build_type=apartment&kodawari=is_2nd_floor_higher&kodawari=excludes_fixed&sort_key=_created_at",
       "mode": "tky-rent"
     }
 ---
@@ -145,7 +145,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://www.t-p-o.com/rent/?type=rent&area_id%5B%5D=1301&area_id%5B%5D=1302&area_id%5B%5D=1303&area_id%5B%5D=1304&area_id%5B%5D=1306&area_id%5B%5D=1307&area_id%5B%5D=1308&area_id%5B%5D=1309&area_id%5B%5D=1310&area_id%5B%5D=1311&area_id%5B%5D=1314&area_id%5B%5D=1316&area_id%5B%5D=1300&price_min=&price_max=&exclusive_area_min=&exclusive_area_max=&property_name=",
+      "url": "https://www.t-p-o.com/rent/?type=rent&area_id%5B%5D=1301&area_id%5B%5D=1303&area_id%5B%5D=1306&area_id%5B%5D=1308&area_id%5B%5D=1309&area_id%5B%5D=1310&area_id%5B%5D=1311&area_id%5B%5D=1314&area_id%5B%5D=1316&area_id%5B%5D=1300&price_min=&price_max=&exclusive_area_min=&exclusive_area_max=&property_name=",
       "mode": "tky-rent"
     }
 ---

@@ -18,7 +18,9 @@ metadata:
   namespace: rentapp
 data:
   redis-config: |-
-    save 3600 1
+    save 900 1
+    save 300 10
+    save 60 10000
 ---
 apiVersion: apps/v1
 kind: Deployment
