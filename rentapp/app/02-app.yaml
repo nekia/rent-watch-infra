@@ -1,92 +1,92 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mediator
-  labels:
-    app: mediator
-  namespace: rentapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: mediator
-  template:
-    metadata:
-      labels:
-        app: mediator
-    spec:
-      initContainers:
-      - name: init-myservice
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-      containers:
-      - name: mediator
-        image: local.insecure-registry.io/mediator:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-      imagePullSecrets:
-      - name: regcred
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: scanner-linea
-  labels:
-    app: scanner-linea
-  namespace: rentapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: scanner-linea
-  template:
-    metadata:
-      labels:
-        app: scanner-linea
-        apptype: scanner
-    spec:
-      topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            apptype: scanner
-      initContainers:
-      - name: init-myservice
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-      containers:
-      - name: scanner-linea
-        image: local.insecure-registry.io/scanner-linea:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: NATS_SUBJECT_ROOMURL
-            value: room-linea-tky-rent
-          - name: NATS_SUBJECT_ROOMDETAIL
-            value: roomdetails-tky-rent
-        ports:
-        - containerPort: 3000
-      imagePullSecrets:
-      - name: regcred
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: scanner-linea
-  namespace: rentapp
-spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
-  selector:
-    app: scanner-linea
----
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: mediator
+#   labels:
+#     app: mediator
+#   namespace: rentapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: mediator
+#   template:
+#     metadata:
+#       labels:
+#         app: mediator
+#     spec:
+#       initContainers:
+#       - name: init-myservice
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+#       containers:
+#       - name: mediator
+#         image: local.insecure-registry.io/mediator:1.0.0
+#         imagePullPolicy: Always
+#         env:
+#           - name: NATS_SERVER_URL
+#             value: nats-server:4222
+#       imagePullSecrets:
+#       - name: regcred
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: scanner-linea
+#   labels:
+#     app: scanner-linea
+#   namespace: rentapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: scanner-linea
+#   template:
+#     metadata:
+#       labels:
+#         app: scanner-linea
+#         apptype: scanner
+#     spec:
+#       topologySpreadConstraints:
+#       - maxSkew: 1
+#         topologyKey: kubernetes.io/hostname
+#         whenUnsatisfiable: ScheduleAnyway
+#         labelSelector:
+#           matchLabels:
+#             apptype: scanner
+#       initContainers:
+#       - name: init-myservice
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+#       containers:
+#       - name: scanner-linea
+#         image: local.insecure-registry.io/scanner-linea:1.0.0
+#         imagePullPolicy: Always
+#         env:
+#           - name: NATS_SERVER_URL
+#             value: nats-server:4222
+#           - name: NATS_SUBJECT_ROOMURL
+#             value: room-linea-tky-rent
+#           - name: NATS_SUBJECT_ROOMDETAIL
+#             value: roomdetails-tky-rent
+#         ports:
+#         - containerPort: 3000
+#       imagePullSecrets:
+#       - name: regcred
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: scanner-linea
+#   namespace: rentapp
+# spec:
+#   ports:
+#   - name: "http-port"
+#     protocol: TCP
+#     port: 3000
+#   selector:
+#     app: scanner-linea
+# ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -130,10 +130,10 @@ spec:
         env:
           - name: NATS_SERVER_URL
             value: nats-server:4222
-          - name: NATS_SUBJECT_ROOMURL
-            value: room-suumo-tky-rent
-          - name: NATS_SUBJECT_ROOMDETAIL
-            value: roomdetails-tky-rent
+          # - name: NATS_SUBJECT_ROOMURL
+          #   value: room-suumo-tky-rent
+          # - name: NATS_SUBJECT_ROOMDETAIL
+          #   value: roomdetails-tky-rent
         ports:
         - containerPort: 3000
       imagePullSecrets:
@@ -152,535 +152,535 @@ spec:
   selector:
     app: scanner-suumo
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: scanner-homes
-  labels:
-    app: scanner-homes
-  namespace: rentapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: scanner-homes
-  template:
-    metadata:
-      labels:
-        app: scanner-homes
-        apptype: scanner
-    spec:
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                app: scanner-suumo
-            topologyKey: kubernetes.io/hostname
-      topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            apptype: scanner
-      initContainers:
-      - name: init-myservice
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-      containers:
-      - name: scanner-homes
-        image: local.insecure-registry.io/scanner-homes:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: NATS_SUBJECT_ROOMURL
-            value: room-homes-tky-rent
-          - name: NATS_SUBJECT_ROOMDETAIL
-            value: roomdetails-tky-rent
-        ports:
-        - containerPort: 3000
-      imagePullSecrets:
-      - name: regcred
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: scanner-homes
-  namespace: rentapp
-spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
-  selector:
-    app: scanner-homes
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: scanner-rstore
-  labels:
-    app: scanner-rstore
-  namespace: rentapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: scanner-rstore
-  template:
-    metadata:
-      labels:
-        app: scanner-rstore
-        apptype: scanner
-    spec:
-      topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            apptype: scanner
-      initContainers:
-      - name: init-myservice
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-      containers:
-      - name: scanner-rstore
-        image: local.insecure-registry.io/scanner-rstore:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: NATS_SUBJECT_ROOMURL
-            value: room-rstore-tky-rent
-          - name: NATS_SUBJECT_ROOMDETAIL
-            value: roomdetails-tky-rent
-        ports:
-        - containerPort: 3000
-      imagePullSecrets:
-      - name: regcred
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: scanner-rstore
-  namespace: rentapp
-spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
-  selector:
-    app: scanner-rstore
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: scanner-goodrooms
-  labels:
-    app: scanner-goodrooms
-  namespace: rentapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: scanner-goodrooms
-  template:
-    metadata:
-      labels:
-        app: scanner-goodrooms
-        apptype: scanner
-    spec:
-      topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            apptype: scanner
-      initContainers:
-      - name: init-myservice
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-      containers:
-      - name: scanner-goodrooms
-        image: local.insecure-registry.io/scanner-goodrooms:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: NATS_SUBJECT_ROOMURL
-            value: room-goodrooms-tky-rent
-          - name: NATS_SUBJECT_ROOMDETAIL
-            value: roomdetails-tky-rent
-        ports:
-        - containerPort: 3000
-      imagePullSecrets:
-      - name: regcred
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: scanner-goodrooms
-  namespace: rentapp
-spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
-  selector:
-    app: scanner-goodrooms
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: scanner-mitsui
-  labels:
-    app: scanner-mitsui
-  namespace: rentapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: scanner-mitsui
-  template:
-    metadata:
-      labels:
-        app: scanner-mitsui
-        apptype: scanner
-    spec:
-      topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            apptype: scanner
-      initContainers:
-      - name: init-myservice
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-      containers:
-      - name: scanner-mitsui
-        image: local.insecure-registry.io/scanner-mitsui:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: NATS_SUBJECT_ROOMURL
-            value: room-mitsui-tky-rent
-          - name: NATS_SUBJECT_ROOMDETAIL
-            value: roomdetails-tky-rent
-        ports:
-        - containerPort: 3000
-      imagePullSecrets:
-      - name: regcred
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: scanner-mitsui
-  namespace: rentapp
-spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
-  selector:
-    app: scanner-mitsui
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: scanner-rnet
-  labels:
-    app: scanner-rnet
-  namespace: rentapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: scanner-rnet
-  template:
-    metadata:
-      labels:
-        app: scanner-rnet
-        apptype: scanner
-    spec:
-      topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            apptype: scanner
-      initContainers:
-      - name: init-myservice
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-      containers:
-      - name: scanner-rnet
-        image: local.insecure-registry.io/scanner-rnet:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: NATS_SUBJECT_ROOMURL
-            value: room-rnet-tky-rent
-          - name: NATS_SUBJECT_ROOMDETAIL
-            value: roomdetails-tky-rent
-        ports:
-        - containerPort: 3000
-      imagePullSecrets:
-      - name: regcred
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: scanner-rnet
-  namespace: rentapp
-spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
-  selector:
-    app: scanner-rnet
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: scanner-ken
-  labels:
-    app: scanner-ken
-  namespace: rentapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: scanner-ken
-  template:
-    metadata:
-      labels:
-        app: scanner-ken
-        apptype: scanner
-    spec:
-      topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            apptype: scanner
-      initContainers:
-      - name: init-myservice
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-      containers:
-      - name: scanner-ken
-        image: local.insecure-registry.io/scanner-ken:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: NATS_SUBJECT_ROOMURL
-            value: room-ken-tky-rent
-          - name: NATS_SUBJECT_ROOMDETAIL
-            value: roomdetails-tky-rent
-        ports:
-        - containerPort: 3000
-      imagePullSecrets:
-      - name: regcred
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: scanner-ken
-  namespace: rentapp
-spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
-  selector:
-    app: scanner-ken
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: scanner-bs
-  labels:
-    app: scanner-bs
-  namespace: rentapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: scanner-bs
-  template:
-    metadata:
-      labels:
-        app: scanner-bs
-        apptype: scanner
-    spec:
-      topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            apptype: scanner
-      initContainers:
-      - name: init-myservice
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-      containers:
-      - name: scanner-bs
-        image: local.insecure-registry.io/scanner-bs:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: NATS_SUBJECT_ROOMURL
-            value: room-bs-tky-rent
-          - name: NATS_SUBJECT_ROOMDETAIL
-            value: roomdetails-tky-rent
-        ports:
-        - containerPort: 3000
-      imagePullSecrets:
-      - name: regcred
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: scanner-bs
-  namespace: rentapp
-spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
-  selector:
-    app: scanner-bs
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: scanner-td
-  labels:
-    app: scanner-td
-  namespace: rentapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: scanner-td
-  template:
-    metadata:
-      labels:
-        app: scanner-td
-        apptype: scanner
-    spec:
-      topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            apptype: scanner
-      initContainers:
-      - name: init-myservice
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-      containers:
-      - name: scanner-td
-        image: local.insecure-registry.io/scanner-td:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: NATS_SUBJECT_ROOMURL
-            value: room-td-tky-rent
-          - name: NATS_SUBJECT_ROOMDETAIL
-            value: roomdetails-tky-rent
-        ports:
-        - containerPort: 3000
-      imagePullSecrets:
-      - name: regcred
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: scanner-td
-  namespace: rentapp
-spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
-  selector:
-    app: scanner-td
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: scanner-tpo
-  labels:
-    app: scanner-tpo
-  namespace: rentapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: scanner-tpo
-  template:
-    metadata:
-      labels:
-        app: scanner-tpo
-        apptype: scanner
-    spec:
-      topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            apptype: scanner
-      initContainers:
-      - name: init-myservice
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-      containers:
-      - name: scanner-tpo
-        image: local.insecure-registry.io/scanner-tpo:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: NATS_SUBJECT_ROOMURL
-            value: room-tpo-tky-rent
-          - name: NATS_SUBJECT_ROOMDETAIL
-            value: roomdetails-tky-rent
-        ports:
-        - containerPort: 3000
-      imagePullSecrets:
-      - name: regcred
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: scanner-tpo
-  namespace: rentapp
-spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
-  selector:
-    app: scanner-tpo
----
+# # apiVersion: apps/v1
+# # kind: Deployment
+# # metadata:
+# #   name: scanner-homes
+# #   labels:
+# #     app: scanner-homes
+# #   namespace: rentapp
+# # spec:
+# #   replicas: 1
+# #   selector:
+# #     matchLabels:
+# #       app: scanner-homes
+# #   template:
+# #     metadata:
+# #       labels:
+# #         app: scanner-homes
+# #         apptype: scanner
+# #     spec:
+# #       affinity:
+# #         podAntiAffinity:
+# #           requiredDuringSchedulingIgnoredDuringExecution:
+# #           - labelSelector:
+# #               matchLabels:
+# #                 app: scanner-suumo
+# #             topologyKey: kubernetes.io/hostname
+# #       topologySpreadConstraints:
+# #       - maxSkew: 1
+# #         topologyKey: kubernetes.io/hostname
+# #         whenUnsatisfiable: ScheduleAnyway
+# #         labelSelector:
+# #           matchLabels:
+# #             apptype: scanner
+# #       initContainers:
+# #       - name: init-myservice
+# #         image: busybox:1.28
+# #         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+# #       containers:
+# #       - name: scanner-homes
+# #         image: local.insecure-registry.io/scanner-homes:1.0.0
+# #         imagePullPolicy: Always
+# #         env:
+# #           - name: NATS_SERVER_URL
+# #             value: nats-server:4222
+# #           - name: NATS_SUBJECT_ROOMURL
+# #             value: room-homes-tky-rent
+# #           - name: NATS_SUBJECT_ROOMDETAIL
+# #             value: roomdetails-tky-rent
+# #         ports:
+# #         - containerPort: 3000
+# #       imagePullSecrets:
+# #       - name: regcred
+# # ---
+# # kind: Service
+# # apiVersion: v1
+# # metadata:
+# #   name: scanner-homes
+# #   namespace: rentapp
+# # spec:
+# #   ports:
+# #   - name: "http-port"
+# #     protocol: TCP
+# #     port: 3000
+# #   selector:
+# #     app: scanner-homes
+# # ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: scanner-rstore
+#   labels:
+#     app: scanner-rstore
+#   namespace: rentapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: scanner-rstore
+#   template:
+#     metadata:
+#       labels:
+#         app: scanner-rstore
+#         apptype: scanner
+#     spec:
+#       topologySpreadConstraints:
+#       - maxSkew: 1
+#         topologyKey: kubernetes.io/hostname
+#         whenUnsatisfiable: ScheduleAnyway
+#         labelSelector:
+#           matchLabels:
+#             apptype: scanner
+#       initContainers:
+#       - name: init-myservice
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+#       containers:
+#       - name: scanner-rstore
+#         image: local.insecure-registry.io/scanner-rstore:1.0.0
+#         imagePullPolicy: Always
+#         env:
+#           - name: NATS_SERVER_URL
+#             value: nats-server:4222
+#           - name: NATS_SUBJECT_ROOMURL
+#             value: room-rstore-tky-rent
+#           - name: NATS_SUBJECT_ROOMDETAIL
+#             value: roomdetails-tky-rent
+#         ports:
+#         - containerPort: 3000
+#       imagePullSecrets:
+#       - name: regcred
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: scanner-rstore
+#   namespace: rentapp
+# spec:
+#   ports:
+#   - name: "http-port"
+#     protocol: TCP
+#     port: 3000
+#   selector:
+#     app: scanner-rstore
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: scanner-goodrooms
+#   labels:
+#     app: scanner-goodrooms
+#   namespace: rentapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: scanner-goodrooms
+#   template:
+#     metadata:
+#       labels:
+#         app: scanner-goodrooms
+#         apptype: scanner
+#     spec:
+#       topologySpreadConstraints:
+#       - maxSkew: 1
+#         topologyKey: kubernetes.io/hostname
+#         whenUnsatisfiable: ScheduleAnyway
+#         labelSelector:
+#           matchLabels:
+#             apptype: scanner
+#       initContainers:
+#       - name: init-myservice
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+#       containers:
+#       - name: scanner-goodrooms
+#         image: local.insecure-registry.io/scanner-goodrooms:1.0.0
+#         imagePullPolicy: Always
+#         env:
+#           - name: NATS_SERVER_URL
+#             value: nats-server:4222
+#           - name: NATS_SUBJECT_ROOMURL
+#             value: room-goodrooms-tky-rent
+#           - name: NATS_SUBJECT_ROOMDETAIL
+#             value: roomdetails-tky-rent
+#         ports:
+#         - containerPort: 3000
+#       imagePullSecrets:
+#       - name: regcred
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: scanner-goodrooms
+#   namespace: rentapp
+# spec:
+#   ports:
+#   - name: "http-port"
+#     protocol: TCP
+#     port: 3000
+#   selector:
+#     app: scanner-goodrooms
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: scanner-mitsui
+#   labels:
+#     app: scanner-mitsui
+#   namespace: rentapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: scanner-mitsui
+#   template:
+#     metadata:
+#       labels:
+#         app: scanner-mitsui
+#         apptype: scanner
+#     spec:
+#       topologySpreadConstraints:
+#       - maxSkew: 1
+#         topologyKey: kubernetes.io/hostname
+#         whenUnsatisfiable: ScheduleAnyway
+#         labelSelector:
+#           matchLabels:
+#             apptype: scanner
+#       initContainers:
+#       - name: init-myservice
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+#       containers:
+#       - name: scanner-mitsui
+#         image: local.insecure-registry.io/scanner-mitsui:1.0.0
+#         imagePullPolicy: Always
+#         env:
+#           - name: NATS_SERVER_URL
+#             value: nats-server:4222
+#           - name: NATS_SUBJECT_ROOMURL
+#             value: room-mitsui-tky-rent
+#           - name: NATS_SUBJECT_ROOMDETAIL
+#             value: roomdetails-tky-rent
+#         ports:
+#         - containerPort: 3000
+#       imagePullSecrets:
+#       - name: regcred
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: scanner-mitsui
+#   namespace: rentapp
+# spec:
+#   ports:
+#   - name: "http-port"
+#     protocol: TCP
+#     port: 3000
+#   selector:
+#     app: scanner-mitsui
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: scanner-rnet
+#   labels:
+#     app: scanner-rnet
+#   namespace: rentapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: scanner-rnet
+#   template:
+#     metadata:
+#       labels:
+#         app: scanner-rnet
+#         apptype: scanner
+#     spec:
+#       topologySpreadConstraints:
+#       - maxSkew: 1
+#         topologyKey: kubernetes.io/hostname
+#         whenUnsatisfiable: ScheduleAnyway
+#         labelSelector:
+#           matchLabels:
+#             apptype: scanner
+#       initContainers:
+#       - name: init-myservice
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+#       containers:
+#       - name: scanner-rnet
+#         image: local.insecure-registry.io/scanner-rnet:1.0.0
+#         imagePullPolicy: Always
+#         env:
+#           - name: NATS_SERVER_URL
+#             value: nats-server:4222
+#           - name: NATS_SUBJECT_ROOMURL
+#             value: room-rnet-tky-rent
+#           - name: NATS_SUBJECT_ROOMDETAIL
+#             value: roomdetails-tky-rent
+#         ports:
+#         - containerPort: 3000
+#       imagePullSecrets:
+#       - name: regcred
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: scanner-rnet
+#   namespace: rentapp
+# spec:
+#   ports:
+#   - name: "http-port"
+#     protocol: TCP
+#     port: 3000
+#   selector:
+#     app: scanner-rnet
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: scanner-ken
+#   labels:
+#     app: scanner-ken
+#   namespace: rentapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: scanner-ken
+#   template:
+#     metadata:
+#       labels:
+#         app: scanner-ken
+#         apptype: scanner
+#     spec:
+#       topologySpreadConstraints:
+#       - maxSkew: 1
+#         topologyKey: kubernetes.io/hostname
+#         whenUnsatisfiable: ScheduleAnyway
+#         labelSelector:
+#           matchLabels:
+#             apptype: scanner
+#       initContainers:
+#       - name: init-myservice
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+#       containers:
+#       - name: scanner-ken
+#         image: local.insecure-registry.io/scanner-ken:1.0.0
+#         imagePullPolicy: Always
+#         env:
+#           - name: NATS_SERVER_URL
+#             value: nats-server:4222
+#           - name: NATS_SUBJECT_ROOMURL
+#             value: room-ken-tky-rent
+#           - name: NATS_SUBJECT_ROOMDETAIL
+#             value: roomdetails-tky-rent
+#         ports:
+#         - containerPort: 3000
+#       imagePullSecrets:
+#       - name: regcred
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: scanner-ken
+#   namespace: rentapp
+# spec:
+#   ports:
+#   - name: "http-port"
+#     protocol: TCP
+#     port: 3000
+#   selector:
+#     app: scanner-ken
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: scanner-bs
+#   labels:
+#     app: scanner-bs
+#   namespace: rentapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: scanner-bs
+#   template:
+#     metadata:
+#       labels:
+#         app: scanner-bs
+#         apptype: scanner
+#     spec:
+#       topologySpreadConstraints:
+#       - maxSkew: 1
+#         topologyKey: kubernetes.io/hostname
+#         whenUnsatisfiable: ScheduleAnyway
+#         labelSelector:
+#           matchLabels:
+#             apptype: scanner
+#       initContainers:
+#       - name: init-myservice
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+#       containers:
+#       - name: scanner-bs
+#         image: local.insecure-registry.io/scanner-bs:1.0.0
+#         imagePullPolicy: Always
+#         env:
+#           - name: NATS_SERVER_URL
+#             value: nats-server:4222
+#           - name: NATS_SUBJECT_ROOMURL
+#             value: room-bs-tky-rent
+#           - name: NATS_SUBJECT_ROOMDETAIL
+#             value: roomdetails-tky-rent
+#         ports:
+#         - containerPort: 3000
+#       imagePullSecrets:
+#       - name: regcred
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: scanner-bs
+#   namespace: rentapp
+# spec:
+#   ports:
+#   - name: "http-port"
+#     protocol: TCP
+#     port: 3000
+#   selector:
+#     app: scanner-bs
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: scanner-td
+#   labels:
+#     app: scanner-td
+#   namespace: rentapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: scanner-td
+#   template:
+#     metadata:
+#       labels:
+#         app: scanner-td
+#         apptype: scanner
+#     spec:
+#       topologySpreadConstraints:
+#       - maxSkew: 1
+#         topologyKey: kubernetes.io/hostname
+#         whenUnsatisfiable: ScheduleAnyway
+#         labelSelector:
+#           matchLabels:
+#             apptype: scanner
+#       initContainers:
+#       - name: init-myservice
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+#       containers:
+#       - name: scanner-td
+#         image: local.insecure-registry.io/scanner-td:1.0.0
+#         imagePullPolicy: Always
+#         env:
+#           - name: NATS_SERVER_URL
+#             value: nats-server:4222
+#           - name: NATS_SUBJECT_ROOMURL
+#             value: room-td-tky-rent
+#           - name: NATS_SUBJECT_ROOMDETAIL
+#             value: roomdetails-tky-rent
+#         ports:
+#         - containerPort: 3000
+#       imagePullSecrets:
+#       - name: regcred
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: scanner-td
+#   namespace: rentapp
+# spec:
+#   ports:
+#   - name: "http-port"
+#     protocol: TCP
+#     port: 3000
+#   selector:
+#     app: scanner-td
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: scanner-tpo
+#   labels:
+#     app: scanner-tpo
+#   namespace: rentapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: scanner-tpo
+#   template:
+#     metadata:
+#       labels:
+#         app: scanner-tpo
+#         apptype: scanner
+#     spec:
+#       topologySpreadConstraints:
+#       - maxSkew: 1
+#         topologyKey: kubernetes.io/hostname
+#         whenUnsatisfiable: ScheduleAnyway
+#         labelSelector:
+#           matchLabels:
+#             apptype: scanner
+#       initContainers:
+#       - name: init-myservice
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+#       containers:
+#       - name: scanner-tpo
+#         image: local.insecure-registry.io/scanner-tpo:1.0.0
+#         imagePullPolicy: Always
+#         env:
+#           - name: NATS_SERVER_URL
+#             value: nats-server:4222
+#           - name: NATS_SUBJECT_ROOMURL
+#             value: room-tpo-tky-rent
+#           - name: NATS_SUBJECT_ROOMDETAIL
+#             value: roomdetails-tky-rent
+#         ports:
+#         - containerPort: 3000
+#       imagePullSecrets:
+#       - name: regcred
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: scanner-tpo
+#   namespace: rentapp
+# spec:
+#   ports:
+#   - name: "http-port"
+#     protocol: TCP
+#     port: 3000
+#   selector:
+#     app: scanner-tpo
+# ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -699,22 +699,13 @@ spec:
         app: notifier
     spec:
       initContainers:
-      - name: init-myservice
+      - name: init-myservice1
         image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z scanner-linea 3000; do echo waiting for scanner; sleep 2; done;']
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
       - name: init-myservice2
         image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z scanner-suumo 3000; do echo waiting for scanner; sleep 2; done;']
-      - name: init-myservice3
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z scanner-homes 3000; do echo waiting for scanner; sleep 2; done;']
-      - name: init-myservice4
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z scanner-goodrooms 3000; do echo waiting for scanner; sleep 2; done;']
-      - name: init-myservice5
-        image: busybox:1.28
         command: ['sh', '-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
-      - name: init-myservice6
+      - name: init-myservice3
         image: busybox:1.28
         command: ['sh', '-c', 'until nc -z area-info-mgr 50051; do echo waiting for area-info-mgr; sleep 2; done;']
       containers:
@@ -848,3 +839,82 @@ spec:
     targetPort: 50051
   selector:
     app: area-info-mgr
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crawler-suumo
+  labels:
+    app: crawler-suumo
+  namespace: rentapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crawler-suumo
+  template:
+    metadata:
+      labels:
+        app: crawler-suumo
+        apptype: crawler
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: crawler-suumo
+            topologyKey: kubernetes.io/hostname
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            apptype: crawler
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      containers:
+      - name: crawler-suumo
+        image: local.insecure-registry.io/crawler-suumo:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: CACHE_MGR_URL
+            value: cache-mgr:50051
+          # - name: NATS_SUBJECT_ROOMURL
+          #   value: room-suumo-tky-rent
+          # - name: NATS_SUBJECT_ROOMDETAIL
+          #   value: roomdetails-tky-rent
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - name: crawler-suumo-config-tky-rent
+          mountPath: /usr/src/app/setting
+          readOnly: true
+      volumes:
+      - name: crawler-suumo-config-tky-rent
+        configMap:
+          name: crawler-suumo-config-tky-rent
+          items:
+          - key: "setting.json"
+            path: "setting.json"
+      imagePullSecrets:
+      - name: regcred
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: crawler-suumo
+  namespace: rentapp
+spec:
+  ports:
+  - name: "http-port"
+    protocol: TCP
+    port: 3000
+  selector:
+    app: crawler-suumo
+---

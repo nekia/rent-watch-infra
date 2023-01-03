@@ -194,7 +194,7 @@ data:
       "max_deliver": -1,
       "max_waiting": 512,
       "replay_policy": "instant",
-      "filter_subject": "roomdetails-tky-rent"
+      "filter_subject": "notify-request"
     }
   setting.json: |
     {

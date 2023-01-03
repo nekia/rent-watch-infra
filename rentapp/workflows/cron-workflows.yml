@@ -4,7 +4,7 @@ metadata:
   name: crowling-sites
   namespace: rentapp
 spec:
-  schedule: "0 7-23/2 * * *"
+  schedule: "26 * * * *"
   timezone: "Asia/Tokyo"   # Default to local machine timezone
   # startingDeadlineSeconds: 0
   concurrencyPolicy: "Forbid"      # Default to "Allow"
@@ -16,50 +16,50 @@ spec:
     templates:
     - name: step-step
       steps:
-      - - name: homes
-          template: homes
-          continueOn:
-            failed: true
+      # - - name: homes
+      #     template: homes
+      #     continueOn:
+      #       failed: true
       - - name: suumo
           template: suumo
           continueOn:
             failed: true
-      - - name: linea
-          template: linea
-          continueOn:
-            failed: true
-      - - name: goodrooms
-          template: goodrooms
-          continueOn:
-            failed: true
-      - - name: rstore
-          template: rstore
-          continueOn:
-            failed: true
-      - - name: mitsui
-          template: mitsui
-          continueOn:
-            failed: true
-      - - name: rnet
-          template: rnet
-          continueOn:
-            failed: true
-      - - name: ken
-          template: ken
-          continueOn:
-            failed: true
-      - - name: bs
-          template: bs
-          continueOn:
-            failed: true
-      - - name: td
-          template: td
-          continueOn:
-            failed: true
-      - - name: tpo
-          template: tpo
-          continueOn:
-            failed: true
+      # - - name: linea
+      #     template: linea
+      #     continueOn:
+      #       failed: true
+      # - - name: goodrooms
+      #     template: goodrooms
+      #     continueOn:
+      #       failed: true
+      # - - name: rstore
+      #     template: rstore
+      #     continueOn:
+      #       failed: true
+      # - - name: mitsui
+      #     template: mitsui
+      #     continueOn:
+      #       failed: true
+      # - - name: rnet
+      #     template: rnet
+      #     continueOn:
+      #       failed: true
+      # - - name: ken
+      #     template: ken
+      #     continueOn:
+      #       failed: true
+      # - - name: bs
+      #     template: bs
+      #     continueOn:
+      #       failed: true
+      # - - name: td
+      #     template: td
+      #     continueOn:
+      #       failed: true
+      # - - name: tpo
+      #     template: tpo
+      #     continueOn:
+      #       failed: true
       # - - name: homes-ngy
       #     template: homes-ngy
       #     continueOn:
@@ -90,19 +90,13 @@ spec:
         args: ['-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
     - name: suumo
       container:
-        image: local.insecure-registry.io/crawler-suumo:1.0.0
+        image: local.insecure-registry.io/main:1.0.0
         imagePullPolicy: Always
         env:
           - name: NATS_SERVER_URL
             value: nats-server:4222
-          - name: CACHE_MGR_URL
-            value: cache-mgr:50051
         command: [npm]
-        args: ["start"]
-        volumeMounts:
-        - name: crawler-suumo-config-tky-rent
-          mountPath: /usr/src/app/setting
-          readOnly: true
+        args: ["start", "SUUMO"]
     - name: linea
       container:
         image: local.insecure-registry.io/crawler-linea:1.0.0
