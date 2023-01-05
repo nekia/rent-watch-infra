@@ -4,7 +4,7 @@ metadata:
   name: crowling-sites
   namespace: rentapp
 spec:
-  schedule: "26 * * * *"
+  schedule: "30 7-23/2 * * *"
   timezone: "Asia/Tokyo"   # Default to local machine timezone
   # startingDeadlineSeconds: 0
   concurrencyPolicy: "Forbid"      # Default to "Allow"
@@ -16,10 +16,10 @@ spec:
     templates:
     - name: step-step
       steps:
-      # - - name: homes
-      #     template: homes
-      #     continueOn:
-      #       failed: true
+      - - name: homes
+          template: homes
+          continueOn:
+            failed: true
       - - name: suumo
           template: suumo
           continueOn:
@@ -66,28 +66,13 @@ spec:
       #       failed: true
     - name: homes
       container:
-        image: local.insecure-registry.io/crawler-homes:1.0.0
+        image: local.insecure-registry.io/main:1.0.0
         imagePullPolicy: Always
         env:
           - name: NATS_SERVER_URL
             value: nats-server:4222
-          - name: CACHE_MGR_URL
-            value: cache-mgr:50051
         command: [npm]
-        args: ["start"]
-        volumeMounts:
-        - name: crawler-homes-config-tky-rent
-          mountPath: /usr/src/app/setting
-          readOnly: true
-      initContainers:
-      - name: init-myservice
-        image: busybox:1.28
-        command: ['sh']
-        args: ['-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-      - name: init-myservice2
-        image: busybox:1.28
-        command: ['sh']
-        args: ['-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
+        args: ["start", "HOMES"]
     - name: suumo
       container:
         image: local.insecure-registry.io/main:1.0.0
@@ -97,156 +82,156 @@ spec:
             value: nats-server:4222
         command: [npm]
         args: ["start", "SUUMO"]
-    - name: linea
-      container:
-        image: local.insecure-registry.io/crawler-linea:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: CACHE_MGR_URL
-            value: cache-mgr:50051
-        command: [npm]
-        args: ["start"]
-        volumeMounts:
-        - name: crawler-linea-config-tky-rent
-          mountPath: /usr/src/app/setting
-          readOnly: true
-    - name: goodrooms
-      container:
-        image: local.insecure-registry.io/crawler-goodrooms:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: CACHE_MGR_URL
-            value: cache-mgr:50051
-        command: [npm]
-        args: ["start"]
-        volumeMounts:
-        - name: crawler-goodrooms-config-tky-rent
-          mountPath: /usr/src/app/setting
-          readOnly: true
-    - name: rstore
-      container:
-        image: local.insecure-registry.io/crawler-rstore:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: CACHE_MGR_URL
-            value: cache-mgr:50051
-        command: [npm]
-        args: ["start"]
-        volumeMounts:
-        - name: crawler-rstore-config-tky-rent
-          mountPath: /usr/src/app/setting
-          readOnly: true
-    - name: mitsui
-      container:
-        image: local.insecure-registry.io/crawler-mitsui:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: CACHE_MGR_URL
-            value: cache-mgr:50051
-        command: [npm]
-        args: ["start"]
-        volumeMounts:
-        - name: crawler-mitsui-config-tky-rent
-          mountPath: /usr/src/app/setting
-          readOnly: true
-    - name: rnet
-      container:
-        image: local.insecure-registry.io/crawler-rnet:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: CACHE_MGR_URL
-            value: cache-mgr:50051
-        command: [npm]
-        args: ["start"]
-        volumeMounts:
-        - name: crawler-rnet-config-tky-rent
-          mountPath: /usr/src/app/setting
-          readOnly: true
-    - name: ken
-      container:
-        image: local.insecure-registry.io/crawler-ken:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: CACHE_MGR_URL
-            value: cache-mgr:50051
-        command: [npm]
-        args: ["start"]
-        volumeMounts:
-        - name: crawler-ken-config-tky-rent
-          mountPath: /usr/src/app/setting
-          readOnly: true
-    - name: bs
-      container:
-        image: local.insecure-registry.io/crawler-bs:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: CACHE_MGR_URL
-            value: cache-mgr:50051
-        command: [npm]
-        args: ["start"]
-        volumeMounts:
-        - name: crawler-bs-config-tky-rent
-          mountPath: /usr/src/app/setting
-          readOnly: true
-    - name: td
-      container:
-        image: local.insecure-registry.io/crawler-td:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: CACHE_MGR_URL
-            value: cache-mgr:50051
-        command: [npm]
-        args: ["start"]
-        volumeMounts:
-        - name: crawler-td-config-tky-rent
-          mountPath: /usr/src/app/setting
-          readOnly: true
-    - name: tpo
-      container:
-        image: local.insecure-registry.io/crawler-tpo:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: CACHE_MGR_URL
-            value: cache-mgr:50051
-        command: [npm]
-        args: ["start"]
-        volumeMounts:
-        - name: crawler-tpo-config-tky-rent
-          mountPath: /usr/src/app/setting
-          readOnly: true
-    - name: homes-ngy
-      container:
-        image: local.insecure-registry.io/crawler-homes:1.0.0
-        imagePullPolicy: Always
-        env:
-          - name: NATS_SERVER_URL
-            value: nats-server:4222
-          - name: CACHE_MGR_URL
-            value: cache-mgr:50051
-        command: [npm]
-        args: ["start"]
-        volumeMounts:
-        - name: crawler-homes-config-ngy-rent
-          mountPath: /usr/src/app/setting
-          readOnly: true
+    # - name: linea
+    #   container:
+    #     image: local.insecure-registry.io/crawler-linea:1.0.0
+    #     imagePullPolicy: Always
+    #     env:
+    #       - name: NATS_SERVER_URL
+    #         value: nats-server:4222
+    #       - name: CACHE_MGR_URL
+    #         value: cache-mgr:50051
+    #     command: [npm]
+    #     args: ["start"]
+    #     volumeMounts:
+    #     - name: crawler-linea-config-tky-rent
+    #       mountPath: /usr/src/app/setting
+    #       readOnly: true
+    # - name: goodrooms
+    #   container:
+    #     image: local.insecure-registry.io/crawler-goodrooms:1.0.0
+    #     imagePullPolicy: Always
+    #     env:
+    #       - name: NATS_SERVER_URL
+    #         value: nats-server:4222
+    #       - name: CACHE_MGR_URL
+    #         value: cache-mgr:50051
+    #     command: [npm]
+    #     args: ["start"]
+    #     volumeMounts:
+    #     - name: crawler-goodrooms-config-tky-rent
+    #       mountPath: /usr/src/app/setting
+    #       readOnly: true
+    # - name: rstore
+    #   container:
+    #     image: local.insecure-registry.io/crawler-rstore:1.0.0
+    #     imagePullPolicy: Always
+    #     env:
+    #       - name: NATS_SERVER_URL
+    #         value: nats-server:4222
+    #       - name: CACHE_MGR_URL
+    #         value: cache-mgr:50051
+    #     command: [npm]
+    #     args: ["start"]
+    #     volumeMounts:
+    #     - name: crawler-rstore-config-tky-rent
+    #       mountPath: /usr/src/app/setting
+    #       readOnly: true
+    # - name: mitsui
+    #   container:
+    #     image: local.insecure-registry.io/crawler-mitsui:1.0.0
+    #     imagePullPolicy: Always
+    #     env:
+    #       - name: NATS_SERVER_URL
+    #         value: nats-server:4222
+    #       - name: CACHE_MGR_URL
+    #         value: cache-mgr:50051
+    #     command: [npm]
+    #     args: ["start"]
+    #     volumeMounts:
+    #     - name: crawler-mitsui-config-tky-rent
+    #       mountPath: /usr/src/app/setting
+    #       readOnly: true
+    # - name: rnet
+    #   container:
+    #     image: local.insecure-registry.io/crawler-rnet:1.0.0
+    #     imagePullPolicy: Always
+    #     env:
+    #       - name: NATS_SERVER_URL
+    #         value: nats-server:4222
+    #       - name: CACHE_MGR_URL
+    #         value: cache-mgr:50051
+    #     command: [npm]
+    #     args: ["start"]
+    #     volumeMounts:
+    #     - name: crawler-rnet-config-tky-rent
+    #       mountPath: /usr/src/app/setting
+    #       readOnly: true
+    # - name: ken
+    #   container:
+    #     image: local.insecure-registry.io/crawler-ken:1.0.0
+    #     imagePullPolicy: Always
+    #     env:
+    #       - name: NATS_SERVER_URL
+    #         value: nats-server:4222
+    #       - name: CACHE_MGR_URL
+    #         value: cache-mgr:50051
+    #     command: [npm]
+    #     args: ["start"]
+    #     volumeMounts:
+    #     - name: crawler-ken-config-tky-rent
+    #       mountPath: /usr/src/app/setting
+    #       readOnly: true
+    # - name: bs
+    #   container:
+    #     image: local.insecure-registry.io/crawler-bs:1.0.0
+    #     imagePullPolicy: Always
+    #     env:
+    #       - name: NATS_SERVER_URL
+    #         value: nats-server:4222
+    #       - name: CACHE_MGR_URL
+    #         value: cache-mgr:50051
+    #     command: [npm]
+    #     args: ["start"]
+    #     volumeMounts:
+    #     - name: crawler-bs-config-tky-rent
+    #       mountPath: /usr/src/app/setting
+    #       readOnly: true
+    # - name: td
+    #   container:
+    #     image: local.insecure-registry.io/crawler-td:1.0.0
+    #     imagePullPolicy: Always
+    #     env:
+    #       - name: NATS_SERVER_URL
+    #         value: nats-server:4222
+    #       - name: CACHE_MGR_URL
+    #         value: cache-mgr:50051
+    #     command: [npm]
+    #     args: ["start"]
+    #     volumeMounts:
+    #     - name: crawler-td-config-tky-rent
+    #       mountPath: /usr/src/app/setting
+    #       readOnly: true
+    # - name: tpo
+    #   container:
+    #     image: local.insecure-registry.io/crawler-tpo:1.0.0
+    #     imagePullPolicy: Always
+    #     env:
+    #       - name: NATS_SERVER_URL
+    #         value: nats-server:4222
+    #       - name: CACHE_MGR_URL
+    #         value: cache-mgr:50051
+    #     command: [npm]
+    #     args: ["start"]
+    #     volumeMounts:
+    #     - name: crawler-tpo-config-tky-rent
+    #       mountPath: /usr/src/app/setting
+    #       readOnly: true
+    # - name: homes-ngy
+    #   container:
+    #     image: local.insecure-registry.io/crawler-homes:1.0.0
+    #     imagePullPolicy: Always
+    #     env:
+    #       - name: NATS_SERVER_URL
+    #         value: nats-server:4222
+    #       - name: CACHE_MGR_URL
+    #         value: cache-mgr:50051
+    #     command: [npm]
+    #     args: ["start"]
+    #     volumeMounts:
+    #     - name: crawler-homes-config-ngy-rent
+    #       mountPath: /usr/src/app/setting
+    #       readOnly: true
     # - name: whalesay
     #   inputs:
     #     parameters:

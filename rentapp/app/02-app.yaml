@@ -95,7 +95,7 @@ metadata:
     app: scanner-suumo
   namespace: rentapp
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: scanner-suumo
@@ -130,10 +130,6 @@ spec:
         env:
           - name: NATS_SERVER_URL
             value: nats-server:4222
-          # - name: NATS_SUBJECT_ROOMURL
-          #   value: room-suumo-tky-rent
-          # - name: NATS_SUBJECT_ROOMDETAIL
-          #   value: roomdetails-tky-rent
         ports:
         - containerPort: 3000
       imagePullSecrets:
@@ -151,6 +147,67 @@ spec:
     port: 3000
   selector:
     app: scanner-suumo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scanner-homes
+  labels:
+    app: scanner-homes
+  namespace: rentapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: scanner-homes
+  template:
+    metadata:
+      labels:
+        app: scanner-homes
+        apptype: scanner
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: scanner-suumo
+            topologyKey: kubernetes.io/hostname
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            apptype: scanner
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      containers:
+      - name: scanner-homes
+        image: local.insecure-registry.io/scanner-homes:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+        ports:
+        - containerPort: 3000
+      imagePullSecrets:
+      - name: regcred
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: scanner-homes
+  namespace: rentapp
+spec:
+  ports:
+  - name: "http-port"
+    protocol: TCP
+    port: 3000
+  selector:
+    app: scanner-homes
 ---
 # # apiVersion: apps/v1
 # # kind: Deployment
@@ -918,3 +975,80 @@ spec:
   selector:
     app: crawler-suumo
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crawler-homes
+  labels:
+    app: crawler-homes
+  namespace: rentapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crawler-homes
+  template:
+    metadata:
+      labels:
+        app: crawler-homes
+        apptype: crawler
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: crawler-homes
+            topologyKey: kubernetes.io/hostname
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            apptype: crawler
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      containers:
+      - name: crawler-homes
+        image: local.insecure-registry.io/crawler-homes:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: CACHE_MGR_URL
+            value: cache-mgr:50051
+          # - name: NATS_SUBJECT_ROOMURL
+          #   value: room-homes-tky-rent
+          # - name: NATS_SUBJECT_ROOMDETAIL
+          #   value: roomdetails-tky-rent
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - name: crawler-homes-config-tky-rent
+          mountPath: /usr/src/app/setting
+          readOnly: true
+      volumes:
+      - name: crawler-homes-config-tky-rent
+        configMap:
+          name: crawler-homes-config-tky-rent
+          items:
+          - key: "setting.json"
+            path: "setting.json"
+      imagePullSecrets:
+      - name: regcred
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: crawler-homes
+  namespace: rentapp
+spec:
+  ports:
+  - name: "http-port"
+    protocol: TCP
+    port: 3000
+  selector:
+    app: crawler-homes
