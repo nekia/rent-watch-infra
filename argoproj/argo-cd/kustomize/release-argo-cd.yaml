@@ -11,13 +11,22 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: argo-cd
-      version: 4.5.7
+      version: 5.16.14
   values:
-    applicationSet:
-      image:
-        repository: ghcr.io/jr64/argocd-applicationset
-        tag: v0.4.0
-    server:
-      service:
-        type: "LoadBalancer"
+    # applicationSet:
+    #   image:
+    #     repository: ghcr.io/jr64/argocd-applicationset
+    #     tag: v0.4.0
+    configs:
+      params:
+        server.basehref: "/argocd"
+        server.rootpath: "/argocd"
+    # server:
+    #   ingress:
+    #     enabled: true
+    #     hosts:
+    #       - "foo.bar.com"
+    #     ingressClassName: "nginx"
+    #     paths:
+    #       - "argocd"
   interval: 1m0s
