@@ -9,5 +9,5 @@ tunnels:
   #   inspect: false
   argocd:
     proto: http
-    addr: 192.168.2.3
+    addr: 192.168.0.202
     inspect: false
