@@ -71,8 +71,10 @@ spec:
         env:
           - name: NATS_SERVER_URL
             value: nats-server:4222
-        command: [npm]
-        args: ["start", "HOMES"]
+          - name: WATCHING_SITE_NAME
+            value: "HOMES"
+        command: [ "bash" ]
+        args: ["-c","npm start"]
     - name: suumo
       container:
         image: local.insecure-registry.io/main:1.0.0
@@ -80,8 +82,10 @@ spec:
         env:
           - name: NATS_SERVER_URL
             value: nats-server:4222
-        command: [npm]
-        args: ["start", "SUUMO"]
+          - name: WATCHING_SITE_NAME
+            value: "SUUMO"
+        command: [ "bash" ]
+        args: ["-c","npm start"]
     # - name: linea
     #   container:
     #     image: local.insecure-registry.io/crawler-linea:1.0.0

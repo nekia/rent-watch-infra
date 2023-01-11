@@ -797,6 +797,8 @@ spec:
           items:
           - key: "consumer-config.json"
             path: "consumer-config.json"
+          - key: "stream-config.json"
+            path: "stream-config.json"
           - key: "setting.json"
             path: "setting.json"
       imagePullSecrets:
