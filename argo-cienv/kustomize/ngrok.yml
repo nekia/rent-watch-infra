@@ -10,4 +10,8 @@ tunnels:
   argocd:
     proto: http
     addr: 192.168.0.202
-    inspect: false
+    schemes:
+      - https
+      - http
+    host_header: "myk8s.internal"
+    inspect: true
