@@ -7,11 +7,15 @@ tunnels:
   #   proto: http
   #   addr: webhook-eventsource-svc.argo-events:12000
   #   inspect: false
-  argocd:
+  # argocd:
+  #   proto: http
+  #   addr: 192.168.0.202
+  #   schemes:
+  #     - https
+  #     - http
+  #   host_header: "myk8s.internal"
+  #   inspect: true
+  webhook:
     proto: http
-    addr: 192.168.0.202
-    schemes:
-      - https
-      - http
-    host_header: "myk8s.internal"
-    inspect: true
+    addr: webhook-eventsource-svc.argo-events:12000
+    inspect: false
