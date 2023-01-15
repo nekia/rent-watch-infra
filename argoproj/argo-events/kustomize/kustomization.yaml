@@ -4,3 +4,4 @@ resources:
 - repo.yaml
 - namespace-argo-events.yaml
 - release-argo-events.yaml
+- ingress.yaml
