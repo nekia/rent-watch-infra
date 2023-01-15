@@ -13,7 +13,7 @@ metadata:
     # type of authentication
     # nginx.ingress.kubernetes.io/auth-type: basic
     # prevent the controller from redirecting (308) to HTTPS
-    # nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
     # name of the secret that contains the user/password definitions
     # nginx.ingress.kubernetes.io/auth-secret: basic-auth
     # message to display with an appropriate context why the authentication is required
@@ -21,6 +21,12 @@ metadata:
     # custom max body size for file uploading like backing image uploading
     # nginx.ingress.kubernetes.io/proxy-body-size: 10000m
 spec:
+  tls:
+    - hosts:
+      - myk8s.internal
+      # This assumes tls-secret exists and the SSL
+      # certificate contains a CN for foo.bar.com
+      secretName: tls-secret
   rules:
   - host: myk8s.internal
     http:
