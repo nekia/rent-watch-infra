@@ -14,7 +14,12 @@ spec:
         - path: "[body.commits.#.modified.#()#, body.commits.#.added.#()#, body.commits.#.removed.#()#]"
           type: string
           value:
-            - ".*mediator/.*"
+            - ".*main/.*"
+            - ".*notification/.*"
+            - ".*scanner/.*"
+            - ".*crawler/.*"
+            - ".*areaInfoMgr/.*"
+            - ".*cacheMgr/.*"
   triggers:
   - template:
       name: trigger
