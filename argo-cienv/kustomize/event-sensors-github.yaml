@@ -11,6 +11,10 @@ spec:
     eventName: example
     filters:
       data:
+        - path: body.ref
+          type: string
+          value:
+            - refs/heads/main
         - path: "[body.commits.#.modified.#()#, body.commits.#.added.#()#, body.commits.#.removed.#()#]"
           type: string
           value:
@@ -36,7 +40,7 @@ spec:
               generateName: argo-workflows-demo-
               namespace: argo-events
             spec:
-              entrypoint: build
+              entrypoint: script-test
               serviceAccountName: workflow
               arguments:
                 parameters:
@@ -56,6 +60,50 @@ spec:
                     - key: config.json
                       path: config.json
               templates:
+              - name: script-test
+                steps:
+                - - name: cat-files
+                    template: cat-files-script
+                    arguments:
+                      parameters:
+                        - name: subpath-list
+                          value: "{{workflow.parameters.subpath}}"
+                - - name: print-list
+                    template: print-files-script
+                    arguments:
+                      parameters:
+                        - name: subpath
+                          value: "{{item}}"
+                    withParam: "{{steps.cat-files.outputs.parameters.subpath-list}}" 
+              - name: cat-files-script
+                inputs:
+                  parameters:
+                  - name: subpath-list
+                script:
+                  image: debian:9.4
+                  command: [bash]
+                  source: |                                         # Contents of the here-script
+                    echo {{inputs.parameters.subpath-list}} |\
+                      sed  -e 's/\[\[//' -e 's/\]\]//' |\
+                      tr ',' '\n' |\
+                      xargs dirname |\
+                      sort -u |\
+                      tr '\n' ',' |\
+                      sed -e 's/,$//' -e 's/\(.*\)/[\1]/' > /tmp/hello_world.txt
+                outputs:
+                  parameters:
+                  - name: subpath-list  # name of output parameter
+                    valueFrom:
+                      path: /tmp/hello_world.txt
+              - name: print-files-script
+                inputs:
+                  parameters:
+                  - name: subpath
+                script:
+                  image: debian:9.4
+                  command: [bash]
+                  source: |                                         # Contents of the here-script
+                    echo {{inputs.parameters.subpath}}
               - name: build
                 dag:
                   tasks:
@@ -80,3 +128,9 @@ spec:
             dataKey: body.repository.full_name
           dest: spec.arguments.parameters.0.value
           operation: append
+        - src:
+            dependencyName: test-dep
+            dataKey: body.commits.#.modified
+          dest: spec.arguments.parameters.3.value
+          operation: overwrite
+
