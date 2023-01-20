@@ -5,7 +5,7 @@ resources:
   - eventbus-native.yaml
   - sensor-rbac.yaml
   - workflow-rbac.yaml
-  - argo-workflows-templates-build-kaniko-git.yaml
+  # - argo-workflows-templates-build-kaniko-git.yaml
   - event-sources-github.yaml
   # - event-sensors-github.yaml
   - ngrok-deploy.yaml

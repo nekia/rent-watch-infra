@@ -19,7 +19,7 @@ spec:
           type: string
           value:
             - ".*main/.*"
-            - ".*notification/.*"
+            - ".*notifier/.*"
             - ".*scanner/.*"
             - ".*crawler/.*"
             - ".*areaInfoMgr/.*"
@@ -68,28 +68,44 @@ spec:
                       parameters:
                         - name: subpath-list
                           value: "{{workflow.parameters.subpath}}"
-                - - name: print-list
-                    template: print-files-script
+                - - name: build-subpath
+                    template: build-subpath-script
                     arguments:
                       parameters:
                         - name: subpath
                           value: "{{item}}"
+                        - name: app_repo
+                          value: "{{workflow.parameters.app_repo}}"
+                        - name: container_image
+                          value: "{{=sprig.replace(item, ' ', '-'}}"
+                        - name: container_tag
+                          value: "{{workflow.parameters.container_tag}}"
+                        - name: subpath
+                          value: "{{workflow.parameters.subpath}}"
+
+                    # withItems:
+                    #   - Hello
+                    #   - World
                     withParam: "{{steps.cat-files.outputs.parameters.subpath-list}}" 
               - name: cat-files-script
                 inputs:
                   parameters:
                   - name: subpath-list
                 script:
-                  image: debian:9.4
-                  command: [bash]
+                  image: itchyny/gojq:0.12
+                  command: [sh]
                   source: |                                         # Contents of the here-script
-                    echo {{inputs.parameters.subpath-list}} |\
-                      sed  -e 's/\[\[//' -e 's/\]\]//' |\
-                      tr ',' '\n' |\
-                      xargs dirname |\
-                      sort -u |\
-                      tr '\n' ',' |\
-                      sed -e 's/,$//' -e 's/\(.*\)/[\1]/' > /tmp/hello_world.txt
+                    echo {{inputs.parameters.subpath-list}} | \
+                      sed  -e 's/\[\[//' -e 's/\]\]//' | \
+                      tr ',' '\n' | \
+                      xargs -I{} dirname {} | \
+                      sort -u | \
+                      grep -v -E 'setting|protobuf' | \
+                      tr '\n' ',' | \
+                      sed -e 's/,$//' | \
+                      /gojq -Rs 'split(",")' > /tmp/hello_world.txt
+                    cat /tmp/hello_world.txt
+                    echo Completed
                 outputs:
                   parameters:
                   - name: subpath-list  # name of output parameter
@@ -104,7 +120,7 @@ spec:
                   command: [bash]
                   source: |                                         # Contents of the here-script
                     echo {{inputs.parameters.subpath}}
-              - name: build
+              - name: build-subpath-script
                 dag:
                   tasks:
                   - name: build

@@ -10,16 +10,16 @@ spec:
       parameters:
       - name: app_repo
       - name: container_image
-      - name: container_tag
+      - name: short-sha
       - name: subpath
     container:
       image: gcr.io/kaniko-project/executor:debug
       command: [/kaniko/executor]
       args:
       - --context={{inputs.parameters.app_repo}}
-      - --destination=docker-registry.registry/{{inputs.parameters.container_image}}:{{inputs.parameters.container_tag}}
+      - --destination=local.insecure-registry.io/{{inputs.parameters.container_image}}:{{inputs.parameters.short-sha}}
       - --context-sub-path={{inputs.parameters.subpath}}
-      - --insecure-registry=docker-registry.registry
+      - --insecure-registry=local.insecure-registry.io
       volumeMounts:
         - name: kanikoregcred
           mountPath: /kaniko/.docker/
