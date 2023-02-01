@@ -21,6 +21,9 @@ spec:
       params:
         server.basehref: "/argocd"
         server.rootpath: "/argocd"
+      cm:
+        accounts.image-updater: apiKey
+        accounts.testuser: apiKey, login
     # server:
     #   ingress:
     #     enabled: true
