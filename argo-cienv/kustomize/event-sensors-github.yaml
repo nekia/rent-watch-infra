@@ -47,11 +47,9 @@ spec:
                 - name: app_repo
                   value: git://github.com/
                 - name: container_image
-                  value: mediator
-                - name: container_tag
-                  value: "1.0.0"
-                - name: subpath
-                  value: "mediator"
+                  value: default
+                - name: commit-files
+                - name: short-sha
               volumes:
               - name: kanikoregcred
                 secret:
@@ -61,13 +59,14 @@ spec:
                       path: config.json
               templates:
               - name: script-test
+                parallelism: 1
                 steps:
                 - - name: cat-files
                     template: cat-files-script
                     arguments:
                       parameters:
-                        - name: subpath-list
-                          value: "{{workflow.parameters.subpath}}"
+                        - name: commit-files
+                          value: "{{workflow.parameters.commit-files}}"
                 - - name: build-subpath
                     template: build-subpath-script
                     arguments:
@@ -77,25 +76,22 @@ spec:
                         - name: app_repo
                           value: "{{workflow.parameters.app_repo}}"
                         - name: container_image
-                          value: "{{=sprig.replace(item, ' ', '-'}}"
-                        - name: container_tag
-                          value: "{{workflow.parameters.container_tag}}"
-                        - name: subpath
-                          value: "{{workflow.parameters.subpath}}"
-
-                    # withItems:
-                    #   - Hello
-                    #   - World
+                          value: >-
+                            {{=
+                              sprig.lower( sprig.replace("/", "-", item) )
+                            }}
+                        - name: short-sha
+                          value: "{{workflow.parameters.short-sha}}"
                     withParam: "{{steps.cat-files.outputs.parameters.subpath-list}}" 
               - name: cat-files-script
                 inputs:
                   parameters:
-                  - name: subpath-list
+                  - name: commit-files
                 script:
                   image: itchyny/gojq:0.12
                   command: [sh]
                   source: |                                         # Contents of the here-script
-                    echo {{inputs.parameters.subpath-list}} | \
+                    echo {{inputs.parameters.commit-files}} | \
                       sed  -e 's/\[\[//' -e 's/\]\]//' | \
                       tr ',' '\n' | \
                       xargs -I{} dirname {} | \
@@ -115,12 +111,24 @@ spec:
                 inputs:
                   parameters:
                   - name: subpath
+                  - name: app_repo
+                  - name: container_image
+                  - name: short-sha
                 script:
                   image: debian:9.4
                   command: [bash]
                   source: |                                         # Contents of the here-script
                     echo {{inputs.parameters.subpath}}
+                    echo {{inputs.parameters.app_repo}}
+                    echo {{inputs.parameters.container_image}}
+                    echo {{inputs.parameters.short-sha}}
               - name: build-subpath-script
+                inputs:
+                  parameters:
+                  - name: subpath
+                  - name: app_repo
+                  - name: container_image
+                  - name: short-sha
                 dag:
                   tasks:
                   - name: build
@@ -131,13 +139,13 @@ spec:
                     arguments:
                       parameters:
                       - name: app_repo
-                        value: "{{workflow.parameters.app_repo}}"
+                        value: "{{inputs.parameters.app_repo}}"
                       - name: container_image
-                        value: "{{workflow.parameters.container_image}}"
-                      - name: container_tag
-                        value: "{{workflow.parameters.container_tag}}"
+                        value: "{{inputs.parameters.container_image}}"
+                      - name: short-sha
+                        value: "{{inputs.parameters.short-sha}}"
                       - name: subpath
-                        value: "{{workflow.parameters.subpath}}"
+                        value: "{{inputs.parameters.subpath}}"
         parameters:
         - src:
             dependencyName: test-dep
@@ -147,6 +155,10 @@ spec:
         - src:
             dependencyName: test-dep
             dataKey: body.commits.#.modified
+          dest: spec.arguments.parameters.2.value
+          operation: overwrite
+        - src:
+            dependencyName: test-dep
+            dataTemplate: "{{ .Input.body.after | substr 0 7 }}"
           dest: spec.arguments.parameters.3.value
           operation: overwrite
-

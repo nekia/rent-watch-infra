@@ -17,9 +17,9 @@ spec:
       command: [/kaniko/executor]
       args:
       - --context={{inputs.parameters.app_repo}}
-      - --destination=local.insecure-registry.io/{{inputs.parameters.container_image}}:{{inputs.parameters.short-sha}}
-      - --context-sub-path={{inputs.parameters.subpath}}
-      - --insecure-registry=local.insecure-registry.io
+      - --destination=192.168.0.133:30007/{{inputs.parameters.container_image}}:{{inputs.parameters.short-sha}}
+      - --dockerfile={{inputs.parameters.subpath}}/Dockerfile
+      - --insecure-registry=192.168.0.133:30007
       volumeMounts:
         - name: kanikoregcred
           mountPath: /kaniko/.docker/
