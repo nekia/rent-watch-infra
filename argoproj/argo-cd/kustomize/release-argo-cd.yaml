@@ -24,6 +24,11 @@ spec:
       cm:
         accounts.image-updater: apiKey
         accounts.testuser: apiKey, login
+      rbac:
+        policy.csv: |
+          p, role:image-updater, applications, get, */*, allow
+          p, role:image-updater, applications, update, */*, allow
+          g, image-updater, role:image-updater
     # server:
     #   ingress:
     #     enabled: true

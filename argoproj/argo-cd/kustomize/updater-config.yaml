@@ -1,0 +1,12 @@
+data:
+  # log.level can be one of trace, debug, info, warn or error
+  log.level: debug
+  applications_api: argo-cd
+  # The address of Argo CD API endpoint - defaults to argocd-server.argocd
+  argocd.server_addr: argo-cd-argocd-server.argo-cd.svc
+  # Whether to use GRPC-web protocol instead of GRPC over HTTP/2
+  # argocd.grpc_web: "true"
+  # Whether to ignore invalid TLS cert from Argo CD API endpoint
+  argocd.insecure: "true"
+  # Whether to use plain text connection (http) instead of TLS (https)
+  argocd.plaintext: "false"

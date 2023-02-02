@@ -1,0 +1,15 @@
+# kustomization.yml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: argo-cd
+
+resources:
+  - https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
+
+configMapGenerator:
+- name: argocd-image-updater-config
+  files:
+    - updater-config.yaml
+
+# generatorOptions:
+#   disableNameSuffixHash: true
