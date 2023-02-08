@@ -4,4 +4,4 @@ resources:
 - repo.yaml
 - namespace-argo-cd.yaml
 - release-argo-cd.yaml
-- ingress.yaml
+# - ingress.yaml

@@ -17,6 +17,9 @@ spec:
     #   image:
     #     repository: ghcr.io/jr64/argocd-applicationset
     #     tag: v0.4.0
+    server:
+      service:
+        type: LoadBalancer
     configs:
       params:
         server.basehref: "/argocd"
