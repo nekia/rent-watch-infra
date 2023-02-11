@@ -31,6 +31,8 @@ spec:
             value: "/auth/htpasswd"
           - name: REGISTRY_AUTH_HTPASSWD_REALM
             value: "Registry Realm"
+          - name: REGISTRY_HTTP_RELATIVEURLS
+            value: "true"
         ports:
         - containerPort: 5000
         volumeMounts:
@@ -73,4 +75,4 @@ spec:
   storageClassName: longhorn
   resources:
     requests:
-      storage: 5Gi
+      storage: 10Gi
