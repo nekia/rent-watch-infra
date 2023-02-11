@@ -105,13 +105,13 @@ spec:
         app: scanner-suumo
         apptype: scanner
     spec:
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                app: scanner-homes
-            topologyKey: kubernetes.io/hostname
+      # affinity:
+      #   podAntiAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #     - labelSelector:
+      #         matchLabels:
+      #           app: scanner-homes
+      #       topologyKey: kubernetes.io/hostname
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
@@ -166,13 +166,13 @@ spec:
         app: scanner-homes
         apptype: scanner
     spec:
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                app: scanner-suumo
-            topologyKey: kubernetes.io/hostname
+      # affinity:
+      #   podAntiAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #     - labelSelector:
+      #         matchLabels:
+      #           app: scanner-suumo
+      #       topologyKey: kubernetes.io/hostname
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
@@ -761,10 +761,10 @@ spec:
         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
       - name: init-myservice2
         image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z cache-mgr 50051; do echo waiting for cache-mgr; sleep 2; done;']
+        command: ['sh', '-c', 'until nc -z cachemgr 50051; do echo waiting for cachemgr; sleep 2; done;']
       - name: init-myservice3
         image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z area-info-mgr 50051; do echo waiting for area-info-mgr; sleep 2; done;']
+        command: ['sh', '-c', 'until nc -z areainfomgr 50051; do echo waiting for areainfomgr; sleep 2; done;']
       containers:
       - name: notifier
         image: local.insecure-registry.io/notifier:1.0.0
@@ -779,9 +779,9 @@ spec:
           - name: NATS_CONSUMER_BATCH_DURATION
             value: "600000"
           - name: CACHE_MGR_URL
-            value: cache-mgr:50051
+            value: cachemgr:50051
           - name: AREA_INFO_MGR_URL
-            value: area-info-mgr:50051
+            value: areainfomgr:50051
           - name: LINE_NOTIFY_TOKEN
             valueFrom:
               secretKeyRef:
@@ -807,23 +807,23 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cache-mgr
+  name: cachemgr
   labels:
-    app: cache-mgr
+    app: cachemgr
   namespace: rentapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cache-mgr
+      app: cachemgr
   template:
     metadata:
       labels:
-        app: cache-mgr
+        app: cachemgr
     spec:
       containers:
-      - name: cache-mgr
-        image: local.insecure-registry.io/cache-mgr:1.0.0
+      - name: cachemgr
+        image: local.insecure-registry.io/cachemgr:1.0.0
         imagePullPolicy: Always
         env:
           - name: REDIS_SERVER_URL
@@ -838,7 +838,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: cache-mgr
+  name: cachemgr
   namespace: rentapp
 spec:
   ports:
@@ -847,28 +847,28 @@ spec:
     port: 50051
     targetPort: 50051
   selector:
-    app: cache-mgr
+    app: cachemgr
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: area-info-mgr
+  name: areainfomgr
   labels:
-    app: area-info-mgr
+    app: areainfomgr
   namespace: rentapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: area-info-mgr
+      app: areainfomgr
   template:
     metadata:
       labels:
-        app: area-info-mgr
+        app: areainfomgr
     spec:
       containers:
-      - name: area-info-mgr
-        image: local.insecure-registry.io/area-info-mgr:1.0.0
+      - name: areainfomgr
+        image: local.insecure-registry.io/areainfomgr:1.0.0
         imagePullPolicy: Always
         env:
           - name: REDIS_SERVER_URL
@@ -888,7 +888,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: area-info-mgr
+  name: areainfomgr
   namespace: rentapp
 spec:
   ports:
@@ -897,7 +897,7 @@ spec:
     port: 50051
     targetPort: 50051
   selector:
-    app: area-info-mgr
+    app: areainfomgr
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -943,7 +943,7 @@ spec:
           - name: NATS_SERVER_URL
             value: nats-server:4222
           - name: CACHE_MGR_URL
-            value: cache-mgr:50051
+            value: cachemgr:50051
           # - name: NATS_SUBJECT_ROOMURL
           #   value: room-suumo-tky-rent
           # - name: NATS_SUBJECT_ROOMDETAIL
@@ -1021,7 +1021,7 @@ spec:
           - name: NATS_SERVER_URL
             value: nats-server:4222
           - name: CACHE_MGR_URL
-            value: cache-mgr:50051
+            value: cachemgr:50051
           # - name: NATS_SUBJECT_ROOMURL
           #   value: room-homes-tky-rent
           # - name: NATS_SUBJECT_ROOMDETAIL
