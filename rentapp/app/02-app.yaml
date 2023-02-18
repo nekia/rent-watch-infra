@@ -169,6 +169,38 @@ spec:
       imagePullSecrets:
       - name: regcred
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scanner-linea
+  labels:
+    app: scanner-linea
+  namespace: rentapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scanner-linea
+  template:
+    metadata:
+      labels:
+        app: scanner-linea
+        apptype: scanner
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      containers:
+      - name: scanner-linea
+        image: local.insecure-registry.io/scanner-linea:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+      imagePullSecrets:
+      - name: regcred
+---
 # kind: Service
 # apiVersion: v1
 # metadata:
@@ -906,6 +938,51 @@ spec:
       - name: crawler-rstore-config-tky-rent
         configMap:
           name: crawler-rstore-config-tky-rent
+          items:
+          - key: "setting.json"
+            path: "setting.json"
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crawler-linea
+  labels:
+    app: crawler-linea
+  namespace: rentapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crawler-linea
+  template:
+    metadata:
+      labels:
+        app: crawler-linea
+        apptype: crawler
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      containers:
+      - name: crawler-linea
+        image: local.insecure-registry.io/crawler-linea:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: CACHE_MGR_URL
+            value: cachemgr:50051
+        volumeMounts:
+        - name: crawler-linea-config-tky-rent
+          mountPath: /usr/src/app/setting
+          readOnly: true
+      volumes:
+      - name: crawler-linea-config-tky-rent
+        configMap:
+          name: crawler-linea-config-tky-rent
           items:
           - key: "setting.json"
             path: "setting.json"
