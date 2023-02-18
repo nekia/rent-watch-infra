@@ -1,37 +1,6 @@
 # apiVersion: apps/v1
 # kind: Deployment
 # metadata:
-#   name: mediator
-#   labels:
-#     app: mediator
-#   namespace: rentapp
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app: mediator
-#   template:
-#     metadata:
-#       labels:
-#         app: mediator
-#     spec:
-#       initContainers:
-#       - name: init-myservice
-#         image: busybox:1.28
-#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-#       containers:
-#       - name: mediator
-#         image: local.insecure-registry.io/mediator:1.0.0
-#         imagePullPolicy: Always
-#         env:
-#           - name: NATS_SERVER_URL
-#             value: nats-server:4222
-#       imagePullSecrets:
-#       - name: regcred
-# ---
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
 #   name: scanner-linea
 #   labels:
 #     app: scanner-linea
@@ -73,19 +42,6 @@
 #         - containerPort: 3000
 #       imagePullSecrets:
 #       - name: regcred
-# ---
-# kind: Service
-# apiVersion: v1
-# metadata:
-#   name: scanner-linea
-#   namespace: rentapp
-# spec:
-#   ports:
-#   - name: "http-port"
-#     protocol: TCP
-#     port: 3000
-#   selector:
-#     app: scanner-linea
 # ---
 apiVersion: apps/v1
 kind: Deployment
@@ -135,19 +91,6 @@ spec:
       imagePullSecrets:
       - name: regcred
 ---
-kind: Service
-apiVersion: v1
-metadata:
-  name: scanner-suumo
-  namespace: rentapp
-spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
-  selector:
-    app: scanner-suumo
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -191,134 +134,41 @@ spec:
         env:
           - name: NATS_SERVER_URL
             value: nats-server:4222
-        ports:
-        - containerPort: 3000
       imagePullSecrets:
       - name: regcred
 ---
-kind: Service
-apiVersion: v1
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: scanner-homes
+  name: scanner-rstore
+  labels:
+    app: scanner-rstore
   namespace: rentapp
 spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
+  replicas: 1
   selector:
-    app: scanner-homes
+    matchLabels:
+      app: scanner-rstore
+  template:
+    metadata:
+      labels:
+        app: scanner-rstore
+        apptype: scanner
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      containers:
+      - name: scanner-rstore
+        image: local.insecure-registry.io/scanner-rstore:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+      imagePullSecrets:
+      - name: regcred
 ---
-# # apiVersion: apps/v1
-# # kind: Deployment
-# # metadata:
-# #   name: scanner-homes
-# #   labels:
-# #     app: scanner-homes
-# #   namespace: rentapp
-# # spec:
-# #   replicas: 1
-# #   selector:
-# #     matchLabels:
-# #       app: scanner-homes
-# #   template:
-# #     metadata:
-# #       labels:
-# #         app: scanner-homes
-# #         apptype: scanner
-# #     spec:
-# #       affinity:
-# #         podAntiAffinity:
-# #           requiredDuringSchedulingIgnoredDuringExecution:
-# #           - labelSelector:
-# #               matchLabels:
-# #                 app: scanner-suumo
-# #             topologyKey: kubernetes.io/hostname
-# #       topologySpreadConstraints:
-# #       - maxSkew: 1
-# #         topologyKey: kubernetes.io/hostname
-# #         whenUnsatisfiable: ScheduleAnyway
-# #         labelSelector:
-# #           matchLabels:
-# #             apptype: scanner
-# #       initContainers:
-# #       - name: init-myservice
-# #         image: busybox:1.28
-# #         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-# #       containers:
-# #       - name: scanner-homes
-# #         image: local.insecure-registry.io/scanner-homes:1.0.0
-# #         imagePullPolicy: Always
-# #         env:
-# #           - name: NATS_SERVER_URL
-# #             value: nats-server:4222
-# #           - name: NATS_SUBJECT_ROOMURL
-# #             value: room-homes-tky-rent
-# #           - name: NATS_SUBJECT_ROOMDETAIL
-# #             value: roomdetails-tky-rent
-# #         ports:
-# #         - containerPort: 3000
-# #       imagePullSecrets:
-# #       - name: regcred
-# # ---
-# # kind: Service
-# # apiVersion: v1
-# # metadata:
-# #   name: scanner-homes
-# #   namespace: rentapp
-# # spec:
-# #   ports:
-# #   - name: "http-port"
-# #     protocol: TCP
-# #     port: 3000
-# #   selector:
-# #     app: scanner-homes
-# # ---
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: scanner-rstore
-#   labels:
-#     app: scanner-rstore
-#   namespace: rentapp
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app: scanner-rstore
-#   template:
-#     metadata:
-#       labels:
-#         app: scanner-rstore
-#         apptype: scanner
-#     spec:
-#       topologySpreadConstraints:
-#       - maxSkew: 1
-#         topologyKey: kubernetes.io/hostname
-#         whenUnsatisfiable: ScheduleAnyway
-#         labelSelector:
-#           matchLabels:
-#             apptype: scanner
-#       initContainers:
-#       - name: init-myservice
-#         image: busybox:1.28
-#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
-#       containers:
-#       - name: scanner-rstore
-#         image: local.insecure-registry.io/scanner-rstore:1.0.0
-#         imagePullPolicy: Always
-#         env:
-#           - name: NATS_SERVER_URL
-#             value: nats-server:4222
-#           - name: NATS_SUBJECT_ROOMURL
-#             value: room-rstore-tky-rent
-#           - name: NATS_SUBJECT_ROOMDETAIL
-#             value: roomdetails-tky-rent
-#         ports:
-#         - containerPort: 3000
-#       imagePullSecrets:
-#       - name: regcred
-# ---
 # kind: Service
 # apiVersion: v1
 # metadata:
@@ -944,12 +794,6 @@ spec:
             value: nats-server:4222
           - name: CACHE_MGR_URL
             value: cachemgr:50051
-          # - name: NATS_SUBJECT_ROOMURL
-          #   value: room-suumo-tky-rent
-          # - name: NATS_SUBJECT_ROOMDETAIL
-          #   value: roomdetails-tky-rent
-        ports:
-        - containerPort: 3000
         volumeMounts:
         - name: crawler-suumo-config-tky-rent
           mountPath: /usr/src/app/setting
@@ -963,19 +807,6 @@ spec:
             path: "setting.json"
       imagePullSecrets:
       - name: regcred
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: crawler-suumo
-  namespace: rentapp
-spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
-  selector:
-    app: crawler-suumo
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -1022,12 +853,6 @@ spec:
             value: nats-server:4222
           - name: CACHE_MGR_URL
             value: cachemgr:50051
-          # - name: NATS_SUBJECT_ROOMURL
-          #   value: room-homes-tky-rent
-          # - name: NATS_SUBJECT_ROOMDETAIL
-          #   value: roomdetails-tky-rent
-        ports:
-        - containerPort: 3000
         volumeMounts:
         - name: crawler-homes-config-tky-rent
           mountPath: /usr/src/app/setting
@@ -1042,15 +867,47 @@ spec:
       imagePullSecrets:
       - name: regcred
 ---
-kind: Service
-apiVersion: v1
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: crawler-homes
+  name: crawler-rstore
+  labels:
+    app: crawler-rstore
   namespace: rentapp
 spec:
-  ports:
-  - name: "http-port"
-    protocol: TCP
-    port: 3000
+  replicas: 1
   selector:
-    app: crawler-homes
+    matchLabels:
+      app: crawler-rstore
+  template:
+    metadata:
+      labels:
+        app: crawler-rstore
+        apptype: crawler
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+      containers:
+      - name: crawler-rstore
+        image: local.insecure-registry.io/crawler-rstore:1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: NATS_SERVER_URL
+            value: nats-server:4222
+          - name: CACHE_MGR_URL
+            value: cachemgr:50051
+        volumeMounts:
+        - name: crawler-rstore-config-tky-rent
+          mountPath: /usr/src/app/setting
+          readOnly: true
+      volumes:
+      - name: crawler-rstore-config-tky-rent
+        configMap:
+          name: crawler-rstore-config-tky-rent
+          items:
+          - key: "setting.json"
+            path: "setting.json"
+      imagePullSecrets:
+      - name: regcred
