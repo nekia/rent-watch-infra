@@ -1,0 +1,124 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: scanner-homes-ngy-rent
+#   labels:
+#     app: scanner-homes-ngy-rent
+#   namespace: rentapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: scanner-homes-ngy-rent
+#   template:
+#     metadata:
+#       labels:
+#         app: scanner-homes-ngy-rent
+#         apptype: scanner
+#     spec:
+#       topologySpreadConstraints:
+#       - maxSkew: 1
+#         topologyKey: kubernetes.io/hostname
+#         whenUnsatisfiable: ScheduleAnyway
+#         labelSelector:
+#           matchLabels:
+#             apptype: scanner
+#       initContainers:
+#       - name: init-myservice
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+#       containers:
+#       - name: scanner-homes-ngy-rent
+#         image: local.insecure-registry.io/scanner-homes:1.0.0
+#         imagePullPolicy: Always
+#         env:
+#           - name: NATS_SERVER_URL
+#             value: nats-server:4222
+#           - name: NATS_SUBJECT_ROOMURL
+#             value: room-homes-ngy-rent
+#           - name: NATS_SUBJECT_ROOMDETAIL
+#             value: roomdetails-ngy-rent
+#         ports:
+#         - containerPort: 3000
+#       imagePullSecrets:
+#       - name: regcred
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: scanner-homes-ngy-rent
+#   namespace: rentapp
+# spec:
+#   ports:
+#   - name: "http-port"
+#     protocol: TCP
+#     port: 3000
+#   selector:
+#     app: scanner-homes-ngy-rent
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: notifier-ngy-rent
+#   labels:
+#     app: notifier-ngy-rent
+#   namespace: rentapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: notifier-ngy-rent
+#   template:
+#     metadata:
+#       labels:
+#         app: notifier-ngy-rent
+#     spec:
+#       initContainers:
+#       - name: init-myservice1
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z nats-server 4222; do echo waiting for nats-server; sleep 2; done;']
+#       - name: init-myservice2
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z scanner-homes-ngy-rent 3000; do echo waiting for scanner; sleep 2; done;']
+#       - name: init-myservice3
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z cachemgr 50051; do echo waiting for cachemgr; sleep 2; done;']
+#       - name: init-myservice4
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'until nc -z areainfomgr 50051; do echo waiting for areainfomgr; sleep 2; done;']
+#       containers:
+#       - name: notifier-ngy-rent
+#         image: local.insecure-registry.io/notifier:1.0.0
+#         imagePullPolicy: Always
+#         env:
+#           - name: NATS_SERVER_URL
+#             value: nats-server:4222
+#           - name: NATS_CONSUMER_NAME
+#             value: myconsumer2
+#           - name: NATS_CONSUMER_BATCH_SIZE
+#             value: "20"
+#           - name: NATS_CONSUMER_BATCH_DURATION
+#             value: "600000"
+#           - name: CACHE_MGR_URL
+#             value: cachemgr:50051
+#           - name: AREA_INFO_MGR_URL
+#             value: areainfomgr:50051
+#           - name: LINE_NOTIFY_TOKEN
+#             valueFrom:
+#               secretKeyRef:
+#                 name: line-notify-token-ngy-rent
+#                 key: line-notify-token
+#         volumeMounts:
+#           - name: notifier-config-ngy-rent
+#             mountPath: /usr/src/app/setting
+#       volumes:
+#       - name: notifier-config-ngy-rent
+#         configMap:
+#           name: notifier-config-ngy-rent
+#           items:
+#           - key: "consumer-config.json"
+#             path: "consumer-config.json"
+#           - key: "setting.json"
+#             path: "setting.json"
+#       imagePullSecrets:
+#       - name: regcred

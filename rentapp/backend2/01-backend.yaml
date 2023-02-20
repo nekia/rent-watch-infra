@@ -1,0 +1,126 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rentapp-pvc
+  namespace: rentapp2
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: rentapp2
+data:
+  redis-config: |-
+    save 900 1
+    save 300 10
+    save 60 10000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: rentapp
+  name: rentapp
+  namespace: rentapp2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rentapp
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: rentapp
+    spec:
+      volumes:
+      - name: cachevol
+        persistentVolumeClaim:
+          claimName: rentapp-pvc
+      - name: cacheconfig
+        configMap:
+          name: redis-config
+          items:
+          - key: redis-config
+            path: redis.conf
+      containers:
+      - image: redis:6.2.6
+        name: redis
+        resources: {}
+        volumeMounts:
+        - mountPath: /usr/local/etc/redis/
+          name: cacheconfig
+        - mountPath: /data
+          name: cachevol
+        args:
+        - "redis-server"
+        - "/usr/local/etc/redis/redis.conf"
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: rentapp
+  name: rentapp
+  namespace: rentapp2
+spec:
+  ports:
+  - name: "6379"
+    port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    app: rentapp
+  type: NodePort
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-server
+  labels:
+    app: nats-server
+  namespace: rentapp2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats-server
+  template:
+    metadata:
+      labels:
+        app: nats-server
+    spec:
+      containers:
+      - name: nats-server
+        image: nats:2.7.4
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 4222
+        args:
+        - "-js"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nats-server
+  namespace: rentapp2
+spec:
+  ports:
+  - name: "http-port"
+    protocol: TCP
+    port: 4222
+  selector:
+    app: nats-server
