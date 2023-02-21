@@ -14,8 +14,8 @@ spec:
       version: 1.4.0
   values:
     defaultSettings:
-      defaultDataPath: /app/longhorn
-      defaultReplicaCount: 2
+      defaultDataPath: /app/longhorn2
+      defaultReplicaCount: 1
       storageOverProvisioningPercentage: 100      
     service:
       ui:

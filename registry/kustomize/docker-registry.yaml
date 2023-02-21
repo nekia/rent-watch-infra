@@ -43,7 +43,7 @@ spec:
       volumes:
       - name: registry
         persistentVolumeClaim:
-          claimName: registry-pvc
+          claimName: registry-pvc2
       - name: registry-htpasswd
         secret:
           secretName: registry-secret
@@ -67,7 +67,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: registry-pvc
+  name: registry-pvc2
   namespace: registry
 spec:
   accessModes:
@@ -75,4 +75,4 @@ spec:
   storageClassName: longhorn
   resources:
     requests:
-      storage: 10Gi
+      storage: 30Gi
