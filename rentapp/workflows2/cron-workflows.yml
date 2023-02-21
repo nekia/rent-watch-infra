@@ -4,7 +4,7 @@ metadata:
   name: crowling-sites
   namespace: rentapp2
 spec:
-  schedule: "30 7-23/2 * * *"
+  schedule: "30 8-22/2 * * *"
   timezone: "Asia/Tokyo"   # Default to local machine timezone
   # startingDeadlineSeconds: 0
   concurrencyPolicy: "Forbid"      # Default to "Allow"
