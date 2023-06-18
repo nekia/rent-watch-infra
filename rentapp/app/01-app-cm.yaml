@@ -1,24 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: crawler-homes-config-ngy-rent
-  namespace: rentapp
-data:
-  setting.json: |-
-    {
-      "url": "https://www.homes.co.jp/chintai/imayori/list/?sortBy=%24imayori%3Awantmcf&prefectureId=23&cityIds=23101%2C23102%2C23106%2C23114%2C23108%2C23107%2C23115&monthMoneyRoom=15&monthMoneyRoomHigh=30&moneyMaintenanceInclude=1&houseArea=50&houseAgeHigh=0&newDate=1&mcfs=340501%2C340102&wantMcfs=113601%2C263101%2C293101&needsCodes=15",
-      "mode": "ngy-rent"
-    }
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
   name: crawler-rstore-config-tky-rent
   namespace: rentapp
 data:
   setting.json: |-
     {
-      "url": "https://www.r-store.jp/search/?&sb_get_full1=true&sb_purpose1%5B%5D=R&sb_r_min=150000&sb_r_max=250000&sb_area_up=55&sb_kodawari_category%5B%5D=2%E9%9A%8E%E4%BB%A5%E4%B8%8A&sb_c%5B%5D=13104&sb_c%5B%5D=13105&sb_c%5B%5D=13113&sb_c%5B%5D=13109&sb_c%5B%5D=13110&sb_c%5B%5D=13114&sb_c%5B%5D=13115&sb_c%5B%5D=13116&sb_c%5B%5D=13203&sb_c%5B%5D=13204&sb_get_full2=true&sb_purpose2%5B%5D=RO&sb_purpose2%5B%5D=RS&sort_key=1&view_num=10&get_full=true",
+      "url": "https://www.r-store.jp/search/?&sb_get_full1=true&sb_purpose1%5B%5D=R&sb_r_min=180000&sb_r_max=300000&sb_area_up=55&sb_kodawari_category%5B%5D=2%E9%9A%8E%E4%BB%A5%E4%B8%8A&sb_c%5B%5D=13104&sb_c%5B%5D=13105&sb_c%5B%5D=13113&sb_c%5B%5D=13109&sb_c%5B%5D=13110&sb_c%5B%5D=13114&sb_get_full2=true&sb_purpose2%5B%5D=RO&sb_purpose2%5B%5D=RS&sort_key=1&view_num=10&get_full=true",
       "mode": "tky-rent"
     }
 ---
@@ -30,7 +18,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://www.homes.co.jp/chintai/imayori/list/?sortBy=%24imayori%3Awantmcf&prefectureId=13&cityIds=13104%2C13105%2C13109%2C13110%2C13113%2C13114%2C13115%2C13116%2C13203%2C13204&monthMoneyRoom=15&monthMoneyRoomHigh=30&moneyMaintenanceInclude=1&houseArea=50&newDate=1&mcfs=340102&needsCodes=15",
+      "url": "https://www.homes.co.jp/chintai/imayori/list/?sortBy=%24imayori%3Awantmcf&prefectureId=13&cityIds=13104%2C13105%2C13109%2C13110%2C13113%2C13114&monthMoneyRoom=18&monthMoneyRoomHigh=30&moneyMaintenanceInclude=1&houseArea=50&newDate=1&mcfs=340102&needsCodes=15",
       "mode": "tky-rent"
     }
 ---
@@ -42,7 +30,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&fw2=&pc=30&po1=25&po2=99&ta=13&sc=13104&sc=13105&sc=13113&sc=13109&sc=13110&sc=13114&sc=13115&sc=13116&sc=13203&sc=13204&ts=1&cb=17.0&ct=25.0&et=15&mb=55&mt=9999999&cn=30&tc=0401303&tc=0400101&tc=0401106&shkr1=03&shkr2=03&shkr3=03&shkr4=03",
+      "url": "https://suumo.jp/jj/chintai/ichiran/FR301FC001/?ar=030&bs=040&pc=30&smk=&po1=25&po2=99&tc=0401303&shkr1=03&shkr2=03&shkr3=03&shkr4=03&sc=13104&sc=13105&sc=13113&sc=13109&sc=13110&sc=13114&ta=13&cb=18.0&ct=30.0&co=1&ts=1&et=9999999&mb=55&mt=9999999&cn=30&tc=0400101&tc=0401106&fw2=",
       "mode": "tky-rent"
     }
 ---
@@ -54,7 +42,7 @@ metadata:
 data:
   setting.json: |-
     {
-      "url": "https://www.linea.co.jp/article/list/type/rent?pre2=1&pmi=10&pma=16&smi=6&sma=&req=&bye=4&name=",
+      "url": "https://www.linea.co.jp/article/list/type/rent?pre2=1&pmi=13&pma=17&smi=6&sma=&req=&bye=&name=",
       "mode": "tky-rent"
     }
 ---
@@ -219,11 +207,11 @@ data:
     }
   setting.json: |
     {
-      "max_room_price": 23,
-      "min_room_price": 16,
-      "min_room_size": 57,
+      "max_room_price": 26,
+      "min_room_price": 18,
+      "min_room_size": 56,
       "min_floor_level": 2,
       "max_building_age": 35,
-      "min_rank": 2,
+      "min_rank": 3,
       "enable_notify": true
     }
