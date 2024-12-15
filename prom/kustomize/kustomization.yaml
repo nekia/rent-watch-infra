@@ -6,3 +6,4 @@ resources:
 - release-prom-node-exporter.yaml
 - release-prom-kube-state-metrics.yaml
 - release-prom-nats-exporter.yaml
+- release-prom-prometheus.yaml
